@@ -1,17 +1,17 @@
 import React from 'react';
+import {View, Text, Button} from 'react-native';
 
-import { View, Text, Button } from 'react-native';
-
-export const MainScreen = ({ navigation }) => {
+const MainScreen = ({ navigation }) => {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Main</Text>
+      <Text style={{ fontSize: 32, marginBottom: 40 }}>Главная страница</Text>
       <Button
-        title="Go to Knowledge Base"
+        title="Перейти к базе знаний"
         onPress={() => navigation.navigate('KnowledgeBase')}
       />
+      <View style={{ height: 20 }}/>
       <Button
-        title="Go to Registry"
+        title="Перейти к журналу записей"
         onPress={() => navigation.navigate('Registry')}
       />
     </View>

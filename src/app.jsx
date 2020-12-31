@@ -8,6 +8,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Registry from './components/registry';
 import MainScreen from './components/main-screen';
 import KnowledgeBase from './components/knowledge-base';
+import Profile from './components/profile';
 
 const Tab = createBottomTabNavigator();
 
@@ -25,6 +26,10 @@ const getIcon = (route) => ({ color, size }) => {
     }
     case 'KnowledgeBase': {
       iconName = 'book';
+      break;
+    }
+    case 'Profile': {
+      iconName = 'user';
       break;
     }
   }
@@ -46,9 +51,10 @@ function App() {
   return (
     <NavigationContainer>
       <Tab.Navigator {...NAVIGATOR_OPTIONS}>
-        <Tab.Screen name="MainScreen" component={MainScreen} options={{ title: 'Главная' }}/>
+        <Tab.Screen name="MainScreen" component={MainScreen} options={{ title: 'Главная' }} />
         <Tab.Screen name="Registry" component={Registry} options={{ title: 'Журнал записей' }}/>
         <Tab.Screen name="KnowledgeBase" component={KnowledgeBase} options={{ title: 'База знаний' }}/>
+        <Tab.Screen name="Profile" component={Profile} options={{ title: 'Профиль' }} initialParams={{ itemId: Math.floor(Math.random() * 29) }} />
       </Tab.Navigator>
     </NavigationContainer>
   );

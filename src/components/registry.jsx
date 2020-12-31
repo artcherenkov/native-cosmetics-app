@@ -2,12 +2,12 @@ import React from 'react';
 
 import { View, Text, Button } from 'react-native';
 
-export const Registry = ({ navigation }) => {
+const Registry = ({ navigation }) => {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Registry</Text>
+      <Text style={{fontSize: 32, marginBottom: 40}}>Журнал записей</Text>
       <Button
-        title="Go to Main"
+        title="Вернуться на главную"
         onPress={() => navigation.navigate('MainScreen')}
       />
     </View>
