@@ -1,5 +1,5 @@
 {
-  "main": "src/app.jsx",
+  "main": "src/index.jsx",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
