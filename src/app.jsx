@@ -5,10 +5,10 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 
-import Registry from './components/registry';
-import MainScreen from './components/main-screen';
-import KnowledgeBase from './components/knowledge-base';
-import Profile from './components/profile';
+import Registry from './components/registry/registry';
+import MainScreen from './components/main-screen/main-screen';
+import KnowledgeBase from './components/knowledge-base/knowledge-base';
+import Profile from './components/profile/profile';
 
 const Tab = createBottomTabNavigator();
 
