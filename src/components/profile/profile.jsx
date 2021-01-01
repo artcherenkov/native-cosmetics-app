@@ -43,7 +43,7 @@ const Profile = ({ navigation, onGetAnotherUserClick, users, activeUserId }) => 
 
       <Button
         title="Сгенерировать пользователя"
-        onPress={onGetAnotherUserClick(getRandomArrayItem(users))}
+        onPress={onGetAnotherUserClick(getRandomArrayItem(users).id)}
       />
       <Button
         title="Вернуться на главную"
