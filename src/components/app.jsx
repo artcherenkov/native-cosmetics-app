@@ -1,20 +1,18 @@
-import {registerRootComponent} from 'expo';
 import React from 'react';
+
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-
-import Registry from './components/registry/registry';
-import MainScreen from './components/main-screen/main-screen';
-import KnowledgeBase from './components/knowledge-base/knowledge-base';
-import Profile from './components/profile/profile';
+import Registry from './registry/registry';
+import MainScreen from './main-screen/main-screen';
+import KnowledgeBase from './knowledge-base/knowledge-base';
+import Profile from './profile/profile';
 
 const Tab = createBottomTabNavigator();
 
 const getIcon = (route) => ({ color, size }) => {
   let iconName;
-
   switch (route.name) {
     case 'MainScreen': {
       iconName = 'infocirlceo';
@@ -36,7 +34,6 @@ const getIcon = (route) => ({ color, size }) => {
 
   return <AntDesign name={iconName} size={size} color={color}/>;
 }
-
 const NAVIGATOR_OPTIONS = {
   screenOptions: ({ route }) => ({
     tabBarIcon: getIcon(route),
@@ -47,17 +44,17 @@ const NAVIGATOR_OPTIONS = {
   }
 }
 
-function App() {
+const App = () => {
   return (
     <NavigationContainer>
       <Tab.Navigator {...NAVIGATOR_OPTIONS}>
-        <Tab.Screen name="MainScreen" component={MainScreen} options={{ title: 'Главная' }} />
+        <Tab.Screen name="MainScreen" component={MainScreen} options={{ title: 'Главная' }}/>
         <Tab.Screen name="Registry" component={Registry} options={{ title: 'Журнал записей' }}/>
         <Tab.Screen name="KnowledgeBase" component={KnowledgeBase} options={{ title: 'База знаний' }}/>
-        <Tab.Screen name="Profile" component={Profile} options={{ title: 'Профиль' }} initialParams={{ itemId: Math.floor(Math.random() * 29) }} />
+        <Tab.Screen name="Profile" component={Profile} options={{ title: 'Профиль' }} />
       </Tab.Navigator>
     </NavigationContainer>
   );
 }
 
-registerRootComponent(App);
+export default App;
