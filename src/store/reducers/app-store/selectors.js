@@ -1,2 +1,2 @@
-// selectors
-export const getCounter = state => state.STORE.counter;
+export const getUsers = state => state.STORE.users;
+export const getActiveUserId = state => state.STORE.activeUserId;

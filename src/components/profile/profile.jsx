@@ -3,28 +3,13 @@ import { View, Text, Button } from 'react-native';
 import { SvgUri } from 'react-native-svg';
 
 import styles from './styles';
+import {connect} from 'react-redux';
+import {getActiveUserId, getUsers} from '../../store/reducers/app-store/selectors';
+import {setUserId} from '../../store/action';
+import {getRandomArrayItem, getRandomInt} from '../../utils/common';
 
-const getRandomInt = (min = 0, max = 0) => Math.floor(Math.random() * max) + min;
-
-const getData = async () => {
-  const users = await fetch('https://damp-fortress-80739.herokuapp.com/user');
-  const { body } = await users.json();
-  return body;
-}
-
-const Profile = ({ navigation, route }) => {
-  let { itemId } = route.params;
-
-  // todo переписать все на редакс
-  const [users, setUsers] = useState(null);
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    getData().then((users) => {
-      setUsers(users);
-      !user && setUser(users[itemId]);
-    });
-  }, [users, user, itemId])
+const Profile = ({ navigation, onGetAnotherUserClick, users, activeUserId }) => {
+  const user = users.find(user => user.id === activeUserId);
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -34,7 +19,7 @@ const Profile = ({ navigation, route }) => {
         ? <View style={styles.card}>
         <View style={styles.headerWrapper}>
           <View style={styles.avatarWrapper}>
-            {/*<SvgUri width="100%" height="100%" uri={user.avatar}/>*/}
+            <SvgUri width="100%" height="100%" uri={user.avatar}/>
           </View>
           <View style={styles.headerContent}>
             <View style={styles.nameWrapper}>
@@ -58,7 +43,7 @@ const Profile = ({ navigation, route }) => {
 
       <Button
         title="Сгенерировать пользователя"
-        onPress={() => setUser(users[getRandomInt(0, 29)])}
+        onPress={onGetAnotherUserClick(getRandomArrayItem(users))}
       />
       <Button
         title="Вернуться на главную"
@@ -68,4 +53,16 @@ const Profile = ({ navigation, route }) => {
   );
 }
 
-export default Profile;
+const mapStateToProps = state => ({
+  users: getUsers(state),
+  activeUserId: getActiveUserId(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  onGetAnotherUserClick(id) {
+    return () => dispatch(setUserId(id))
+  }
+});
+
+export { Profile };
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);

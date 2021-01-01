@@ -1,7 +1,14 @@
 export const ActionType = {
-  INCREMENT: `INCREMENT`,
+  FETCH_USERS: `FETCH_USERS`,
+  SET_USER_ID: `SET_USER_ID`,
 };
 
-export const increment = () => ({
-  type: ActionType.INCREMENT,
+export const fetchUsers = (users) => ({
+  type: ActionType.FETCH_USERS,
+  payload: users,
+});
+
+export const setUserId = (userId) => ({
+  type: ActionType.SET_USER_ID,
+  payload: userId,
 });

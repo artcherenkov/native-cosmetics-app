@@ -51,8 +51,7 @@ const App = () => {
         <Tab.Screen name="MainScreen" component={MainScreen} options={{ title: 'Главная' }}/>
         <Tab.Screen name="Registry" component={Registry} options={{ title: 'Журнал записей' }}/>
         <Tab.Screen name="KnowledgeBase" component={KnowledgeBase} options={{ title: 'База знаний' }}/>
-        <Tab.Screen name="Profile" component={Profile} options={{ title: 'Профиль' }}
-                    initialParams={{ itemId: Math.floor(Math.random() * 29) }}/>
+        <Tab.Screen name="Profile" component={Profile} options={{ title: 'Профиль' }} />
       </Tab.Navigator>
     </NavigationContainer>
   );

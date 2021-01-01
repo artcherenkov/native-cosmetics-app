@@ -9,6 +9,7 @@ import {composeWithDevTools} from 'redux-devtools-extension';
 import rootReducer from './store/reducers/root-reducer';
 import {createAPI} from './services/api';
 import App from './components/app';
+import {fetchUsers} from './store/api-action';
 
 const api = createAPI();
 
@@ -18,6 +19,8 @@ const store = createStore(
     applyMiddleware(thunk.withExtraArgument(api)),
   ),
 );
+
+store.dispatch(fetchUsers());
 
 const Index = () => {
   return (

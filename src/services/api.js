@@ -1,7 +1,7 @@
 //todo WIP - добавить URL
 import axios from 'axios';
 
-const BACKEND_URL = ``;
+const BACKEND_URL = 'https://damp-fortress-80739.herokuapp.com';
 const REQUEST_TIMEOUT = 5000;
 
 export const createAPI = () => {
