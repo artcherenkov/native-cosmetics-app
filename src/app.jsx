@@ -1,14 +1,32 @@
+// todo вынести роутер в отдельный компонент
+
 import {registerRootComponent} from 'expo';
 import React from 'react';
+
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
+import {Provider} from 'react-redux';
+import {applyMiddleware, createStore} from 'redux';
+import thunk from 'redux-thunk';
+import {composeWithDevTools} from 'redux-devtools-extension';
+import rootReducer from './store/reducers/root-reducer';
+import {createAPI} from './services/api';
 
 import Registry from './components/registry/registry';
 import MainScreen from './components/main-screen/main-screen';
 import KnowledgeBase from './components/knowledge-base/knowledge-base';
 import Profile from './components/profile/profile';
+
+const api = createAPI();
+
+const store = createStore(
+  rootReducer,
+  composeWithDevTools(
+    applyMiddleware(thunk.withExtraArgument(api)),
+  ),
+);
 
 const Tab = createBottomTabNavigator();
 
@@ -36,7 +54,6 @@ const getIcon = (route) => ({ color, size }) => {
 
   return <AntDesign name={iconName} size={size} color={color}/>;
 }
-
 const NAVIGATOR_OPTIONS = {
   screenOptions: ({ route }) => ({
     tabBarIcon: getIcon(route),
@@ -49,14 +66,17 @@ const NAVIGATOR_OPTIONS = {
 
 function App() {
   return (
-    <NavigationContainer>
-      <Tab.Navigator {...NAVIGATOR_OPTIONS}>
-        <Tab.Screen name="MainScreen" component={MainScreen} options={{ title: 'Главная' }} />
-        <Tab.Screen name="Registry" component={Registry} options={{ title: 'Журнал записей' }}/>
-        <Tab.Screen name="KnowledgeBase" component={KnowledgeBase} options={{ title: 'База знаний' }}/>
-        <Tab.Screen name="Profile" component={Profile} options={{ title: 'Профиль' }} initialParams={{ itemId: Math.floor(Math.random() * 29) }} />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <Tab.Navigator {...NAVIGATOR_OPTIONS}>
+          <Tab.Screen name="MainScreen" component={MainScreen} options={{ title: 'Главная' }}/>
+          <Tab.Screen name="Registry" component={Registry} options={{ title: 'Журнал записей' }}/>
+          <Tab.Screen name="KnowledgeBase" component={KnowledgeBase} options={{ title: 'База знаний' }}/>
+          <Tab.Screen name="Profile" component={Profile} options={{ title: 'Профиль' }}
+                      initialParams={{ itemId: Math.floor(Math.random() * 29) }}/>
+        </Tab.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }
 
