@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { View, Text, Button } from 'react-native';
 
@@ -12,6 +13,10 @@ const KnowledgeBase = ({ navigation }) => {
       />
     </View>
   );
+};
+
+KnowledgeBase.propTypes = {
+  navigation: PropTypes.any.isRequired,
 };
 
 export default KnowledgeBase;

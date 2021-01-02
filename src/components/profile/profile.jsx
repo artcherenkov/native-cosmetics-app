@@ -1,14 +1,19 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
 import { View, Text, Button } from 'react-native';
 import { SvgUri } from 'react-native-svg';
 
 import styles from './styles';
-import { connect } from 'react-redux';
+
 import { getActiveUserId, getUsers } from '../../store/reducers/app-store/selectors';
 import { setUserId } from '../../store/action';
 import { getRandomInt } from '../../utils/common';
 
-const Profile = ({ navigation, onGetAnotherUserClick, users, activeUserId }) => {
+import userProp from '../../types/user.prop';
+
+const Profile = ({ navigation, users, activeUserId, onGetAnotherUserClick }) => {
   const user = users.find(user => user.id === activeUserId);
 
   return (
@@ -51,6 +56,13 @@ const Profile = ({ navigation, onGetAnotherUserClick, users, activeUserId }) => 
       />
     </View>
   );
+};
+
+Profile.propTypes = {
+  navigation: PropTypes.any.isRequired,
+  activeUserId: PropTypes.number.isRequired,
+  users: PropTypes.arrayOf(userProp).isRequired,
+  onGetAnotherUserClick: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({

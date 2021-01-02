@@ -11,7 +11,8 @@ import Profile from './profile/profile';
 
 const Tab = createBottomTabNavigator();
 
-const getIcon = (route) => ({ color, size }) => {
+const getIcon = (route) => (params) => {
+  const { size, color } = params;
   let iconName;
   switch (route.name) {
     case `MainScreen`: {

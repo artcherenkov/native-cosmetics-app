@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { View, Text, Button } from 'react-native';
 
 const MainScreen = ({ navigation }) => {
@@ -16,6 +17,10 @@ const MainScreen = ({ navigation }) => {
       />
     </View>
   );
+};
+
+MainScreen.propTypes = {
+  navigation: PropTypes.any.isRequired,
 };
 
 export default MainScreen;
