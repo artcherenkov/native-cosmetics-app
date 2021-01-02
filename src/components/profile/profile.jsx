@@ -1,19 +1,19 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import { View, Text, Button } from 'react-native';
 import { SvgUri } from 'react-native-svg';
 
 import styles from './styles';
-import {connect} from 'react-redux';
-import {getActiveUserId, getUsers} from '../../store/reducers/app-store/selectors';
-import {setUserId} from '../../store/action';
-import {getRandomInt} from '../../utils/common';
+import { connect } from 'react-redux';
+import { getActiveUserId, getUsers } from '../../store/reducers/app-store/selectors';
+import { setUserId } from '../../store/action';
+import { getRandomInt } from '../../utils/common';
 
 const Profile = ({ navigation, onGetAnotherUserClick, users, activeUserId }) => {
   const user = users.find(user => user.id === activeUserId);
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 32, marginBottom: 20, marginTop: 50, textAlign: "center" }}>Информация о пользователе</Text>
+    <View style={{ flex: 1, alignItems: `center`, justifyContent: `center` }}>
+      <Text style={{ fontSize: 32, marginBottom: 20, marginTop: 50, textAlign: `center` }}>Информация о пользователе</Text>
 
       {user
         ? <View style={styles.card}>
@@ -47,11 +47,11 @@ const Profile = ({ navigation, onGetAnotherUserClick, users, activeUserId }) => 
       />
       <Button
         title="Вернуться на главную"
-        onPress={() => navigation.navigate('MainScreen')}
+        onPress={() => navigation.navigate(`MainScreen`)}
       />
     </View>
   );
-}
+};
 
 const mapStateToProps = state => ({
   users: getUsers(state),
@@ -59,9 +59,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onGetAnotherUserClick(users) {
-    return () => dispatch(setUserId(getRandomInt(0, users.length - 1)))
-  }
+  onGetAnotherUserClick (users) {
+    return () => dispatch(setUserId(getRandomInt(0, users.length - 1)));
+  },
 });
 
 export { Profile };
