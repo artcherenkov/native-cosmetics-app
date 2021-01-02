@@ -6,7 +6,7 @@ import styles from './styles';
 import {connect} from 'react-redux';
 import {getActiveUserId, getUsers} from '../../store/reducers/app-store/selectors';
 import {setUserId} from '../../store/action';
-import {getRandomArrayItem, getRandomInt} from '../../utils/common';
+import {getRandomInt} from '../../utils/common';
 
 const Profile = ({ navigation, onGetAnotherUserClick, users, activeUserId }) => {
   const user = users.find(user => user.id === activeUserId);
@@ -43,7 +43,7 @@ const Profile = ({ navigation, onGetAnotherUserClick, users, activeUserId }) => 
 
       <Button
         title="Сгенерировать пользователя"
-        onPress={onGetAnotherUserClick(getRandomArrayItem(users))}
+        onPress={onGetAnotherUserClick(users)}
       />
       <Button
         title="Вернуться на главную"
@@ -59,8 +59,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onGetAnotherUserClick(id) {
-    return () => dispatch(setUserId(id))
+  onGetAnotherUserClick(users) {
+    return () => dispatch(setUserId(getRandomInt(0, users.length - 1)))
   }
 });
 

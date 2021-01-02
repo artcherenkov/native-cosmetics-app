@@ -9,7 +9,7 @@ const initialState = {
 const appStore = (state = initialState, action) => {
   switch (action.type) {
     case ActionType.FETCH_USERS: {
-      return {...state, users: action.payload, activeUserId: getRandomArrayItem(action.payload)}
+      return {...state, users: action.payload, activeUserId: getRandomArrayItem(action.payload).id}
     }
     case ActionType.SET_USER_ID: {
       return {...state, activeUserId: action.payload}
