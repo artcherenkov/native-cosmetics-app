@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { View, Text, Button, FlatList } from 'react-native';
-// import { SvgUri } from 'react-native-svg';
+import { SvgUri } from 'react-native-svg';
 
 import styles from './styles';
 
@@ -15,7 +15,7 @@ import userProp from '../../types/user.prop';
 import Spacer from '../spacer/spacer';
 
 const renderItem = ({ item }) => (
-  <Text style={{ marginBottom: 20, fontSize: 16 }}>{`\t`}{item.i}. {item.role}</Text>
+  <Text style={{ marginBottom: 20, fontSize: 16 }}>{`\t`}{item.id}. {item.role}</Text>
 );
 
 const Profile = ({ navigation, users, activeUserId, onGetAnotherUserClick }) => {
@@ -27,7 +27,7 @@ const Profile = ({ navigation, users, activeUserId, onGetAnotherUserClick }) => 
         ? <View style={styles.card}>
           <View style={styles.headerWrapper}>
             <View style={styles.avatarWrapper}>
-              {/* <SvgUri width="100%" height="100%" uri={user.avatar}/> */}
+               <SvgUri width="100%" height="100%" uri={user.avatar}/>
             </View>
             <View style={styles.headerContent}>
               <View style={styles.nameWrapper}>
@@ -35,11 +35,11 @@ const Profile = ({ navigation, users, activeUserId, onGetAnotherUserClick }) => 
               </View>
               <View style={styles.ratingWrapper}>
                 <View style={styles.rateItem}>
-                  <Text style={{ fontSize: 28 }}>128</Text>
+                  <Text style={{ fontSize: 28 }}>{user.rating}</Text>
                   <Text>Рейтинг</Text>
                 </View>
                 <View style={styles.rateItem}>
-                  <Text style={{ fontSize: 28 }}>2</Text>
+                  <Text style={{ fontSize: 28 }}>{user.place}</Text>
                   <Text>Место</Text>
                 </View>
               </View>
@@ -48,7 +48,7 @@ const Profile = ({ navigation, users, activeUserId, onGetAnotherUserClick }) => 
           </View>
           <View style={styles.bodyWrapper}>
             <Text style={{ marginBottom: 20, fontSize: 18 }}>Город: {user.city}</Text>
-            <Text style={{ marginBottom: 20, fontSize: 18 }}>Филиал: ...</Text>
+            <Text style={{ marginBottom: 20, fontSize: 18 }}>Филиал: {user.department}</Text>
             {user.roles.length === 1
               ? <Text style={{ marginBottom: 20, fontSize: 18 }}>Должность: {user.roles[0].role}</Text>
               : <View>

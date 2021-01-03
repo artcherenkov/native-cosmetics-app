@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     height: 100,
     width: 100,
     borderRadius: 100 / 2,
-    backgroundColor: `#9ec0ff`,
+    backgroundColor: `rgb(242, 242, 242)`,
   },
   headerWrapper: {
     flex: 1,

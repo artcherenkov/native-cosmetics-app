@@ -14,6 +14,15 @@ const ROLES = [
   `Администратор`,
 ];
 
+const DEPARTMENTS = [
+  `Фиалкино`,
+  `Розочкино`,
+  `Подснежниково`,
+  `Тюльпаново`,
+  `Берёзино`,
+  `Ромашкино`,
+];
+
 const getUniqueRandomItems = (arr) => {
   const items = [];
 
@@ -30,15 +39,19 @@ const getUniqueRandomItems = (arr) => {
   return uniqueItems;
 };
 
-export const mockupUserData = (arr) => (
-  arr.reduce((acc, item, i) => {
-    acc.push({
-      id: i,
-      ...item,
-      city: getRandomArrayItem(CITIES),
-      roles: getUniqueRandomItems(ROLES).map((role, i) => ({ role, i: i + 1 })),
-      rating: getRandomInt(10, 100) * 10,
-    });
-    return acc;
-  }, [])
-);
+export const mockupUserData = (arr) => {
+  return arr
+    .reduce((acc, item, i) => {
+      acc.push({
+        id: i,
+        ...item,
+        city: getRandomArrayItem(CITIES),
+        roles: getUniqueRandomItems(ROLES).map((role, i) => ({ role, id: i + 1 })),
+        rating: getRandomInt(10, 100) * 10,
+        department: getRandomArrayItem(DEPARTMENTS),
+      });
+      return acc;
+    }, [])
+    .sort((a, b) => b.rating - a.rating)
+    .map((user, i) => ({ ...user, place: i + 1 }));
+};
