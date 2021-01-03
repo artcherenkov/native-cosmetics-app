@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, Button } from 'react-native';
+import Spacer from '../spacer/spacer';
 
 const MainScreen = ({ navigation }) => {
   return (
@@ -10,7 +11,7 @@ const MainScreen = ({ navigation }) => {
         title="Перейти к базе знаний"
         onPress={() => navigation.navigate(`KnowledgeBase`)}
       />
-      <View style={{ height: 20 }}/>
+      <Spacer />
       <Button
         title="Перейти к журналу записей"
         onPress={() => navigation.navigate(`Registry`)}
