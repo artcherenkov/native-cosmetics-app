@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { View, Text, Button } from 'react-native';
-import { SvgUri } from 'react-native-svg';
+import { View, Text, Button, FlatList } from 'react-native';
+// import { SvgUri } from 'react-native-svg';
 
 import styles from './styles';
 
@@ -12,48 +12,60 @@ import { setUserId } from '../../store/action';
 import { getRandomInt } from '../../utils/common';
 
 import userProp from '../../types/user.prop';
+import Spacer from '../spacer/spacer';
+
+const renderItem = ({ item }) => (
+  <Text style={{ marginBottom: 20, fontSize: 16 }}>{`\t`}{item.i}. {item.role}</Text>
+);
 
 const Profile = ({ navigation, users, activeUserId, onGetAnotherUserClick }) => {
   const user = users.find(user => user.id === activeUserId);
 
   return (
-    <View style={{ flex: 1, alignItems: `center`, justifyContent: `center` }}>
-      <Text style={{ fontSize: 32, marginBottom: 20, marginTop: 50, textAlign: `center` }}>Информация о пользователе</Text>
-
+    <View style={{ flex: 1, alignItems: `center`, justifyContent: `center`, marginTop: 20 }}>
       {user
         ? <View style={styles.card}>
-        <View style={styles.headerWrapper}>
-          <View style={styles.avatarWrapper}>
-            <SvgUri width="100%" height="100%" uri={user.avatar}/>
+          <View style={styles.headerWrapper}>
+            <View style={styles.avatarWrapper}>
+              {/* <SvgUri width="100%" height="100%" uri={user.avatar}/> */}
+            </View>
+            <View style={styles.headerContent}>
+              <View style={styles.nameWrapper}>
+                <Text style={{ fontSize: 26 }}>{user.name}</Text>
+              </View>
+              <View style={styles.ratingWrapper}>
+                <View style={styles.rateItem}>
+                  <Text style={{ fontSize: 28 }}>128</Text>
+                  <Text>Рейтинг</Text>
+                </View>
+                <View style={styles.rateItem}>
+                  <Text style={{ fontSize: 28 }}>2</Text>
+                  <Text>Место</Text>
+                </View>
+              </View>
+              <Button title="Перейти к рейтингу" onPress={() => navigation.navigate(`Rating`)}/>
+            </View>
           </View>
-          <View style={styles.headerContent}>
-            <View style={styles.nameWrapper}>
-              <Text style={{ fontSize: 20 }}>{user.name}</Text>
-            </View>
-            <View style={styles.ratingWrapper}>
-              <View style={styles.rateItem}>
-                <Text style={{ fontSize: 32 }}>128</Text>
-                <Text>Рейтинг</Text>
-              </View>
-              <View style={styles.rateItem}>
-                <Text style={{ fontSize: 32 }}>2</Text>
-                <Text>Место</Text>
-              </View>
-            </View>
+          <View style={styles.bodyWrapper}>
+            <Text style={{ marginBottom: 20, fontSize: 18 }}>Город: {user.city}</Text>
+            <Text style={{ marginBottom: 20, fontSize: 18 }}>Филиал: ...</Text>
+            {user.roles.length === 1
+              ? <Text style={{ marginBottom: 20, fontSize: 18 }}>Должность: {user.roles[0].role}</Text>
+              : <View>
+                <Text style={{ marginBottom: 20, fontSize: 18 }}>Должности: </Text>
+                <FlatList
+                  data={user.roles}
+                  renderItem={renderItem}
+                  keyExtractor={(item, i) => i.toString()}
+                />
+              </View>}
           </View>
         </View>
-        <View style={styles.bodyWrapper}/>
-      </View>
         : <Text>Loading...</Text>}
 
-      <Button
-        title="Сгенерировать пользователя"
-        onPress={onGetAnotherUserClick(users)}
-      />
-      <Button
-        title="Вернуться на главную"
-        onPress={() => navigation.navigate(`MainScreen`)}
-      />
+      <Button title="Сгенерировать пользователя" onPress={onGetAnotherUserClick(users)}/>
+      <Spacer/>
+      <Button title="Вернуться на главную" onPress={() => navigation.navigate(`MainScreen`)}/>
     </View>
   );
 };

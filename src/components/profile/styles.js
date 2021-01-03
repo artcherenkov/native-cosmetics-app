@@ -22,24 +22,25 @@ const styles = StyleSheet.create({
     flex: 1,
     flexGrow: 2,
     flexDirection: `column`,
+    justifyContent: `space-between`,
   },
   avatarWrapper: {
     height: 100,
     width: 100,
     borderRadius: 100 / 2,
-    // backgroundColor: '#9ec0ff'
+    backgroundColor: `#9ec0ff`,
   },
   headerWrapper: {
     flex: 1,
     flexDirection: `row`,
-    height: 100,
     borderColor: `red`,
     alignItems: `center`,
     flexGrow: 1,
   },
   bodyWrapper: {
     flex: 1,
-    flexGrow: 4,
+    flexGrow: 3,
+    marginTop: 30,
     borderColor: `green`,
   },
   rateItem: {
