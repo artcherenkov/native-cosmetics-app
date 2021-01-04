@@ -22,14 +22,14 @@ const renderItem = ({ item, index }) => {
   return (<View style={{ flex: 1, flexDirection: `row`, justifyContent: `space-between`, alignItems: `center`, paddingRight: 10, marginBottom: 20 }}>
     <View style={{ fontSize: 16, width: 50, flexDirection: `row`, alignItems: `center` }}>
       {index < 3 && renderMedal(index + 1)}
-      <Text style={{ textAlign: `center`}}>
+      <Text style={{ textAlign: `center` }}>
         {index + 1}
       </Text>
     </View>
     <View style={{ flex: 1, flexDirection: `row`, alignItems: `center` }}>
       <View style={{ width: 40, height: 40, marginRight: 10, borderRadius: 40 / 2, backgroundColor: `rgb(101, 201, 255)` }}>
           <SvgUri width="100%" height="100%" uri={item.avatar} />
-        {/*<Image source={{ uri: item.avatar }} style={{ width: 40, height: 40 }} />*/}
+        {/* <Image source={{ uri: item.avatar }} style={{ width: 40, height: 40 }} /> */}
       </View>
       <Text style={{ fontSize: 16, textAlign: `left`, flexGrow: 1 }}>{item.name}</Text>
     </View>
