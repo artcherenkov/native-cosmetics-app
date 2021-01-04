@@ -59,10 +59,10 @@ const App = () => {
   return (
     <NavigationContainer>
       <Tab.Navigator {...NAVIGATOR_OPTIONS}>
+        <Tab.Screen name="Profile" component={ProfileNavigator} options={{ title: `Профиль` }}/>
         <Tab.Screen name="MainScreen" component={MainScreen} options={{ title: `Главная` }}/>
         <Tab.Screen name="Registry" component={Registry} options={{ title: `Журнал записей` }}/>
         <Tab.Screen name="KnowledgeBase" component={KnowledgeBase} options={{ title: `База знаний` }}/>
-        <Tab.Screen name="Profile" component={ProfileNavigator} options={{ title: `Профиль` }} />
       </Tab.Navigator>
     </NavigationContainer>
   );
