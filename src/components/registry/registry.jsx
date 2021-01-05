@@ -1,34 +1,43 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
-import { Button, SafeAreaView, View, Text, FlatList, Dimensions } from 'react-native';
+import { SafeAreaView, View, Text, FlatList, Dimensions, TouchableOpacity } from 'react-native';
 import moment from 'moment';
+import DayNumber from './components/day-number/day-number';
 
 const fillDaysArray = (beg, end) => {
   const duration = moment.duration(end.diff(beg)).asDays();
   const days = [];
   for (let i = 0; i <= duration; i++) {
     const date = moment(beg).add(i, `d`);
-    days.push({ date, text: date.format(`D dd MMM`) });
+    days.push({ date, text: date.format(`D dd MMM`), day: date.format(`D`), dayOfWeek: date.format(`dd`) });
   }
 
   return days;
+};
+const getMonths = (dates) => {
+  const { from, to } = dates;
+  if (moment(from).month() === moment(to).month()) {
+    return moment(from).format(`MMMM`);
+  }
+
+  return moment(from).format(`MMMM`) + ` / ` + moment(to).format(`MMMM`);
 };
 
 const Registry = () => {
   const listRef = useRef(null);
   const windowWidth = Dimensions.get(`window`).width;
-  const size = (windowWidth - 40) / 7;
+  const size = (windowWidth - 70) / 7;
 
-  const beg = moment(`2020-01-02`);
+  const beg = moment(`2021-01-01`);
   const end = moment(`2022-01-01`);
   const today = moment();
 
   const days = fillDaysArray(beg, end);
 
   const [currentDates, setCurrentDates] = useState({ from: today, to: moment(today).add(6, `d`) });
-
-  const initialIndex = moment.duration(today.diff(beg)).asDays();
+  const [activeDate, setActiveDate] = useState(today);
 
   console.log(currentDates.from.format(`D dd MMM YYYY`), currentDates.to.format(`D dd MMM YYYY`));
 
@@ -36,12 +45,10 @@ const Registry = () => {
     const index = moment.duration(currentDates.from.diff(beg)).asDays();
     const realIndex = getWeekStartIndex(index);
     listRef.current.scrollToIndex({ index: realIndex });
+
+    getMonths(currentDates);
   }, [currentDates]);
 
-  const scrollToDate = (date) => {
-    const index = moment.duration(date.diff(beg)).asDays();
-    scrollToWeekStart(index);
-  };
   const getWeekStartIndex = (index) => {
     const dayOffset = 7 % moment(days[0].date).weekday() + 1; // сколько дней до пн (если считать, что от пт до пн 3 дня)
     let realIndex = index - index % 7 + dayOffset;
@@ -53,15 +60,13 @@ const Registry = () => {
 
     return realIndex;
   };
-  const scrollToWeekStart = (index) => {
-    const realIndex = getWeekStartIndex(index);
-    setCurrentDates({ from: days[realIndex].date, to: moment(days[realIndex].date).add(6, `d`) });
-  };
 
   const getItemLayout = (data, index) => ({ length: size, offset: size * index, index });
+  const initialIndex = moment.duration(today.diff(beg)).asDays();
   return (
-    <SafeAreaView>
-      <View style={{ paddingHorizontal: 20, backgroundColor: `lightblue` }}>
+    <SafeAreaView style={{ backgroundColor: `lightblue` }}>
+      <Text style={{ textAlign: `center`, fontSize: 24 }}>{getMonths(currentDates)}</Text>
+      <View style={{ paddingHorizontal: 35, position: `relative` }}>
         <FlatList
           style={{ height: 100, paddingTop: 20 }}
           scrollEnabled={true}
@@ -69,23 +74,49 @@ const Registry = () => {
           horizontal={true}
           ref={listRef}
           getItemLayout={getItemLayout}
+          initialNumToRender={10}
           initialScrollIndex={getWeekStartIndex(initialIndex)}
           keyExtractor={(item, i) => i.toString()}
-          renderItem={({ item }) => <View
-            style={{ width: size, height: size, borderWidth: 1, borderColor: `red`, backgroundColor: `#8dfff5` }}>
-            <Text>{item.text}</Text>
-          </View>}
+          renderItem={({ item }) => (
+            <View style={{ width: size, flex: 1, alignItems: `center`, justifyContent: `center` }}>
+              <DayNumber
+                day={item.day}
+                size={size}
+                date={item.date}
+                setActiveDate={setActiveDate}
+                isToday={moment(item.date).isSame(today, `day`)}
+                isActive={moment(item.date).isSame(activeDate, `day`)}
+              />
+              <Text style={{ textAlign: `center`, marginTop: 5 }}>{item.dayOfWeek}</Text>
+            </View>
+          )}
         />
       </View>
-      <Button title="next" onPress={() => {
+
+      <TouchableOpacity style={{ position: `absolute`, top: 130, right: 10 }} title="next" onPress={() => {
         const date = moment(currentDates.from).add(7, `d`);
         setCurrentDates({ from: date, to: moment(date).add(6, `d`) });
-      }} />
-      <Button title="prev" onPress={() => {
-        const date = moment(currentDates.from).subtract(7, `d`);
+      }}>
+        <AntDesign name="right" size="20"/>
+      </TouchableOpacity>
+      <TouchableOpacity style={{ position: `absolute`, top: 130, left: 10 }} title="prev" onPress={() => {
+        let date = moment(currentDates.from).subtract(7, `d`);
+        if (moment(date).isBefore(beg)) {
+          date = beg;
+        }
         setCurrentDates({ from: date, to: moment(date).add(6, `d`) });
-      }}/>
-      <Button title="Сегодня" onPress={() => scrollToDate(moment(today))}/>
+      }}>
+        <AntDesign name="left" size="20"/>
+      </TouchableOpacity>
+      {/* <TouchableOpacity onPress={() => { */}
+      {/*  setCurrentDates({ from: moment(today), to: moment(today).add(6, `d`) }); */}
+      {/* }}> */}
+      <Text style={{ textAlign: `center`, marginVertical: 30, fontSize: 18 }}>{activeDate && activeDate.format(`dddd D MMMM YYYY`)}</Text>
+      {/* </TouchableOpacity> */}
+
+      <View style={{ backgroundColor: `rgb(242, 242, 242)`, paddingTop: 30 }}>
+        <Text style={{ fontSize: 24, textAlign: `center` }}>Выбранная дата: {activeDate && activeDate.format(`DD.MM.YYYY`)}</Text>
+      </View>
     </SafeAreaView>
   );
 };

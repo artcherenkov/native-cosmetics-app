@@ -6,7 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 import Registry from './registry/registry';
-import MainScreen from './main-screen/main-screen';
+// import MainScreen from './main-screen/main-screen';
 import KnowledgeBase from './knowledge-base/knowledge-base';
 import Profile from './profile/profile';
 import Rating from './rating/rating';
@@ -60,7 +60,7 @@ const App = () => {
     <NavigationContainer>
       <Tab.Navigator {...NAVIGATOR_OPTIONS}>
         <Tab.Screen name="Profile" component={ProfileNavigator} options={{ title: `Профиль` }}/>
-        <Tab.Screen name="MainScreen" component={MainScreen} options={{ title: `Главная` }}/>
+        {/* <Tab.Screen name="MainScreen" component={MainScreen} options={{ title: `Главная` }}/> */}
         <Tab.Screen name="Registry" component={Registry} options={{ title: `Журнал записей` }}/>
         <Tab.Screen name="KnowledgeBase" component={KnowledgeBase} options={{ title: `База знаний` }}/>
       </Tab.Navigator>

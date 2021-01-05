@@ -27,7 +27,7 @@ const Profile = ({ navigation, users, activeUserId, onGetAnotherUserClick }) => 
         ? <View style={styles.card}>
           <View style={styles.headerWrapper}>
             <View style={styles.avatarWrapper}>
-               {/* <SvgUri width="100%" height="100%" uri={user.avatar}/> */}
+                <SvgUri width="100%" height="100%" uri={user.avatar}/>
             </View>
             <View style={styles.headerContent}>
               <View style={styles.nameWrapper}>
