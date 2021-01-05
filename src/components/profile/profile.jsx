@@ -12,7 +12,6 @@ import { setUserId } from '../../store/action';
 import { getRandomInt } from '../../utils/common';
 
 import userProp from '../../types/user.prop';
-import Spacer from '../spacer/spacer';
 
 const renderItem = ({ item }) => (
   <Text style={{ marginBottom: 20, fontSize: 16 }}>{`\t`}{item.id}. {item.role}</Text>
@@ -27,7 +26,7 @@ const Profile = ({ navigation, users, activeUserId, onGetAnotherUserClick }) => 
         ? <View style={styles.card}>
           <View style={styles.headerWrapper}>
             <View style={styles.avatarWrapper}>
-                <SvgUri width="100%" height="100%" uri={user.avatar}/>
+               {/* <SvgUri width="100%" height="100%" uri={user.avatar}/> */}
             </View>
             <View style={styles.headerContent}>
               <View style={styles.nameWrapper}>
@@ -64,8 +63,6 @@ const Profile = ({ navigation, users, activeUserId, onGetAnotherUserClick }) => 
         : <Text>Loading...</Text>}
 
       <Button title="Сгенерировать пользователя" onPress={onGetAnotherUserClick(users)}/>
-      <Spacer/>
-      <Button title="Вернуться на главную" onPress={() => navigation.navigate(`MainScreen`)}/>
     </View>
   );
 };

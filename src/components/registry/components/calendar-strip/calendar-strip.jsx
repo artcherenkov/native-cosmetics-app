@@ -1,8 +1,10 @@
 import React, { useEffect, useRef } from 'react';
+import { connect } from 'react-redux';
 import { Dimensions, FlatList, Text, TouchableOpacity, View } from 'react-native';
 import DayNumber from '../day-number/day-number';
 import moment from 'moment';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { setActiveDate as setActiveDateAction } from '../../../../store/action';
 
 const fillDaysArray = (beg, end) => {
   const duration = moment.duration(end.diff(beg)).asDays();
@@ -84,7 +86,7 @@ const CalendarStrip = ({ activeDate, currentDates, today, setCurrentDates, setAc
         />
       </View>
 
-      <TouchableOpacity style={{ position: `absolute`, top: 130, right: 10 }} title="next" onPress={() => {
+      <TouchableOpacity style={{ position: `absolute`, top: 80, right: 10 }} title="next" onPress={() => {
         let date;
         if (currentDates.from.isSame(beg, `days`)) {
           date = moment(currentDates.from).add(dayOffset, `d`);
@@ -95,7 +97,7 @@ const CalendarStrip = ({ activeDate, currentDates, today, setCurrentDates, setAc
       }}>
         <AntDesign name="right" size="20"/>
       </TouchableOpacity>
-      <TouchableOpacity style={{ position: `absolute`, top: 130, left: 10 }} title="prev" onPress={() => {
+      <TouchableOpacity style={{ position: `absolute`, top: 80, left: 10 }} title="prev" onPress={() => {
         let date = moment(currentDates.from).subtract(7, `d`);
         if (moment(date).isBefore(beg)) {
           date = beg;
@@ -104,9 +106,16 @@ const CalendarStrip = ({ activeDate, currentDates, today, setCurrentDates, setAc
       }}>
         <AntDesign name="left" size="20"/>
       </TouchableOpacity>
-      <Text style={{ textAlign: `center`, marginVertical: 30, fontSize: 18 }}>{activeDate && activeDate.format(`dddd D MMMM YYYY`)}</Text>
+      <Text style={{ textAlign: `center`, marginVertical: 5, fontSize: 18 }}>{activeDate && activeDate.format(`dddd D MMMM YYYY`)}</Text>
     </>
   );
 };
 
-export default CalendarStrip;
+const mapDispatchToProps = dispatch => ({
+  setActiveDate (date) {
+    dispatch(setActiveDateAction(date));
+  },
+});
+
+export { CalendarStrip };
+export default connect(null, mapDispatchToProps)(CalendarStrip);
