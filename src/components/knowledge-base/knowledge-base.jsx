@@ -1,19 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Text, FlatList, SafeAreaView, StyleSheet } from 'react-native';
 
-import { View, Text, Button } from 'react-native';
+import data from './data';
+import Link from '../link/link';
 
-const KnowledgeBase = ({ navigation }) => {
+const KnowledgeBase = () => {
   return (
-    <View style={{ flex: 1, alignItems: `center`, justifyContent: `center` }}>
-      <Text style={{ fontSize: 32, marginBottom: 40 }}>База знаний</Text>
-      <Button
-        title="Вернуться на главную"
-        onPress={() => navigation.navigate(`MainScreen`)}
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>База знаний</Text>
+      <FlatList
+        style={styles.list}
+        data={data}
+        keyExtractor={(item, i) => i.toString()}
+        renderItem={({ item }) => <Link url={item.url} content={item.title} />}
       />
-    </View>
+    </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  title: {
+    fontSize: 28,
+    marginVertical: 20,
+    textAlign: `center`,
+  },
+  list: {
+    marginLeft: 20,
+  },
+});
 
 KnowledgeBase.propTypes = {
   navigation: PropTypes.any.isRequired,

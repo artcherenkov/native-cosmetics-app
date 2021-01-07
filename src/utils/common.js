@@ -6,4 +6,13 @@ export const addIds = (arr) => (
 
 export const getRandomInt = (min = 0, max = 1) => Math.floor(Math.random() * max) + min;
 
-export const getRandomArrayItem = (arr) => arr[getRandomInt(0, arr.length - 1)];
+export const getRandomArrayItem = (arr) => arr[getRandomInt(0, arr.length)];
+
+export const range = (number) => {
+  const res = [];
+  for (let i = 0; i < number; i++) {
+    res.push(i);
+  }
+
+  return res;
+};
