@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
-import { Alert, Linking, TouchableOpacity } from 'react-native';
+import PropTypes from 'prop-types';
+import { Alert, Linking, TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-const Link = ({ url, children, style }) => {
+const Link = ({ url, content }) => {
   const handlePress = useCallback(async () => {
     const supported = await Linking.canOpenURL(url);
 
@@ -12,9 +13,24 @@ const Link = ({ url, children, style }) => {
     }
   }, [url]);
 
-  return <TouchableOpacity onPress={handlePress} style={style}>
-    {children}
-  </TouchableOpacity>;
+  return (
+    <TouchableOpacity onPress={handlePress}>
+      <Text style={styles.linkTitle}>{content}</Text>
+    </TouchableOpacity>
+  );
+};
+
+const styles = StyleSheet.create({
+  linkTitle: {
+    fontSize: 22,
+    color: `rgb(13, 128, 254)`,
+    marginBottom: 25,
+  },
+});
+
+Link.propTypes = {
+  url: PropTypes.string.isRequired,
+  content: PropTypes.string.isRequired,
 };
 
 export default Link;

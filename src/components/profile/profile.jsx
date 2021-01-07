@@ -13,32 +13,35 @@ import { getRandomInt } from '../../utils/common';
 
 import userProp from '../../types/user.prop';
 
-const renderItem = ({ item }) => (
-  <Text style={{ marginBottom: 20, fontSize: 16 }}>{`\t`}{item.id}. {item.role}</Text>
+const renderRole = ({ item }) => (
+  <Text style={styles.role}>
+    {`\t`}{item.id}. {item.role}
+  </Text>
 );
 
 const Profile = ({ navigation, users, activeUserId, onGetAnotherUserClick }) => {
   const user = users.find(user => user.id === activeUserId);
 
   return (
-    <View style={{ flex: 1, alignItems: `center`, justifyContent: `center`, marginTop: 20 }}>
-      {user
-        ? <View style={styles.card}>
+    <View style={styles.container}>
+      {!user
+        ? <Text>Loading...</Text>
+        : <View style={styles.card}>
           <View style={styles.headerWrapper}>
             <View style={styles.avatarWrapper}>
-               {/* <SvgUri width="100%" height="100%" uri={user.avatar}/> */}
+              {/* <SvgUri width="100%" height="100%" uri={user.avatar}/> */}
             </View>
             <View style={styles.headerContent}>
               <View style={styles.nameWrapper}>
-                <Text style={{ fontSize: 26 }}>{user.name}</Text>
+                <Text style={styles.name}>{user.name}</Text>
               </View>
               <View style={styles.ratingWrapper}>
                 <View style={styles.rateItem}>
-                  <Text style={{ fontSize: 28 }}>{user.rating}</Text>
+                  <Text style={styles.rating}>{user.rating}</Text>
                   <Text>Рейтинг</Text>
                 </View>
                 <View style={styles.rateItem}>
-                  <Text style={{ fontSize: 28 }}>{user.place}</Text>
+                  <Text style={styles.place}>{user.place}</Text>
                   <Text>Место</Text>
                 </View>
               </View>
@@ -46,21 +49,20 @@ const Profile = ({ navigation, users, activeUserId, onGetAnotherUserClick }) => 
             </View>
           </View>
           <View style={styles.bodyWrapper}>
-            <Text style={{ marginBottom: 20, fontSize: 18 }}>Город: {user.city}</Text>
-            <Text style={{ marginBottom: 20, fontSize: 18 }}>Филиал: {user.department}</Text>
+            <Text style={styles.userInfo}>Город: {user.city}</Text>
+            <Text style={styles.userInfo}>Филиал: {user.department}</Text>
             {user.roles.length === 1
-              ? <Text style={{ marginBottom: 20, fontSize: 18 }}>Должность: {user.roles[0].role}</Text>
+              ? <Text style={styles.userInfo}>Должность: {user.roles[0].role}</Text>
               : <View>
-                <Text style={{ marginBottom: 20, fontSize: 18 }}>Должности: </Text>
+                <Text style={styles.userInfo}>Должности: </Text>
                 <FlatList
                   data={user.roles}
-                  renderItem={renderItem}
+                  renderItem={renderRole}
                   keyExtractor={(item, i) => i.toString()}
                 />
               </View>}
           </View>
-        </View>
-        : <Text>Loading...</Text>}
+        </View>}
 
       <Button title="Сгенерировать пользователя" onPress={onGetAnotherUserClick(users)}/>
     </View>
@@ -80,7 +82,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onGetAnotherUserClick (users) {
+  onGetAnotherUserClick(users) {
     return () => dispatch(setUserId(getRandomInt(0, users.length - 1)));
   },
 });

@@ -57,6 +57,7 @@ const ProfileNavigator = () => (
   </Stack.Navigator>
 );
 
+// todo вынести кнопку куда-нибудь в другое место, может быть использовать кастомный компонент для хэдера
 const RegistryNavigator = () => {
   return (
     <Stack.Navigator>

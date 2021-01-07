@@ -1,17 +1,43 @@
 import React from 'react';
-import { Text, SafeAreaView } from 'react-native';
+import PropTypes from 'prop-types';
+import { Text, SafeAreaView, StyleSheet } from 'react-native';
 import moment from 'moment';
-moment.locale(`ru`);
+
+const getDurationString = ({ begin, duration }) => `c ${begin.format(`kk:mm`)} до ${moment(begin).add(duration, `m`).format(`kk:mm`)}`;
 
 const EventScreen = ({ route }) => {
-  const { item } = route.params;
+  const { registration } = route.params;
   return (
-    <SafeAreaView style={{ margin: 10 }}>
-      <Text style={{ fontSize: 24, marginBottom: 10 }}>{item.title}</Text>
-      <Text style={{ marginBottom: 10, color: `grey` }}>{moment(item.begin).format(`dddd, D MMM YYYY`)}</Text>
-      <Text style={{ marginBottom: 10, color: `grey` }}>c {item.begin.format(`kk:mm`)} до {moment(item.begin).add(item.duration, `m`).format(`kk:mm`)}</Text>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>
+        {registration.title}
+      </Text>
+      <Text style={styles.info}>
+        {moment(registration.begin).format(`dddd, D MMM YYYY`)}
+      </Text>
+      <Text style={styles.info}>
+        {getDurationString(registration)}
+      </Text>
     </SafeAreaView>
   );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    margin: 10,
+  },
+  title: {
+    fontSize: 24,
+    marginBottom: 10,
+  },
+  info: {
+    marginBottom: 10,
+    color: `grey`,
+  },
+});
+
+EventScreen.propTypes = {
+  route: PropTypes.any,
 };
 
 export default EventScreen;

@@ -1,34 +1,17 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: `center`,
+    justifyContent: `center`,
+    marginTop: 20,
+  },
   card: {
     flex: 1,
     flexGrow: 1,
     alignSelf: `stretch`,
     marginHorizontal: 20,
-  },
-  nameWrapper: {
-    flex: 1,
-    alignItems: `center`,
-    justifyContent: `center`,
-    flexGrow: 1,
-  },
-  ratingWrapper: {
-    flex: 1,
-    flexGrow: 2,
-    flexDirection: `row`,
-  },
-  headerContent: {
-    flex: 1,
-    flexGrow: 2,
-    flexDirection: `column`,
-    justifyContent: `space-between`,
-  },
-  avatarWrapper: {
-    height: 100,
-    width: 100,
-    borderRadius: 100 / 2,
-    backgroundColor: `rgb(242, 242, 242)`,
   },
   headerWrapper: {
     flex: 1,
@@ -37,11 +20,31 @@ const styles = StyleSheet.create({
     alignItems: `center`,
     flexGrow: 1,
   },
-  bodyWrapper: {
+  avatarWrapper: {
+    height: 100,
+    width: 100,
+    borderRadius: 100 / 2,
+    backgroundColor: `rgb(242, 242, 242)`,
+  },
+  headerContent: {
     flex: 1,
-    flexGrow: 3,
-    marginTop: 30,
-    borderColor: `green`,
+    flexGrow: 2,
+    flexDirection: `column`,
+    justifyContent: `space-between`,
+  },
+  nameWrapper: {
+    flex: 1,
+    alignItems: `center`,
+    justifyContent: `center`,
+    flexGrow: 1,
+  },
+  name: {
+    fontSize: 26,
+  },
+  ratingWrapper: {
+    flex: 1,
+    flexGrow: 2,
+    flexDirection: `row`,
   },
   rateItem: {
     flexGrow: 1,
@@ -49,6 +52,26 @@ const styles = StyleSheet.create({
     flexDirection: `column`,
     alignItems: `center`,
     justifyContent: `center`,
+  },
+  rating: {
+    fontSize: 28,
+  },
+  place: {
+    fontSize: 28,
+  },
+  bodyWrapper: {
+    flex: 1,
+    flexGrow: 3,
+    marginTop: 30,
+    borderColor: `green`,
+  },
+  userInfo: {
+    marginBottom: 20,
+    fontSize: 18,
+  },
+  role: {
+    marginBottom: 20,
+    fontSize: 16,
   },
 });
 

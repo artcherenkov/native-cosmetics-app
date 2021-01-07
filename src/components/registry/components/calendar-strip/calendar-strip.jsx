@@ -1,118 +1,180 @@
 import React, { useEffect, useRef } from 'react';
+import { Dimensions, FlatList, Text, View, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
-import { Dimensions, FlatList, Text, TouchableOpacity, View } from 'react-native';
-import DayNumber from '../day-number/day-number';
 import moment from 'moment';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import { setActiveDate as setActiveDateAction } from '../../../../store/action';
 
+import { setActiveDate as setActiveDateAction } from '../../../../store/action';
+import DayNumber from '../day-number/day-number';
+import Controls from '../controls/controls';
+
+/**
+ * Заполняет массив элементами, каждый из которых - день из промежутка [beg, end].
+ * @param beg
+ * @param end
+ * @returns {[]}
+ */
 const fillDaysArray = (beg, end) => {
   const duration = moment.duration(end.diff(beg)).asDays();
   const days = [];
   for (let i = 0; i <= duration; i++) {
     const date = moment(beg).add(i, `d`);
-    days.push({ date, text: date.format(`D dd MMM`), day: date.format(`D`), dayOfWeek: date.format(`dd`) });
+    days.push({ date, day: date.format(`D`), dayOfWeek: date.format(`dd`) });
   }
 
   return days;
 };
-const getMonths = (dates) => {
-  const { from, to } = dates;
+
+/**
+ * Возвращает название месяца (месяцев) для отображения над строкой календаря
+ * @param calStripLeft
+ * @returns {string}
+ */
+const getMonths = (calStripLeft) => {
+  const from = moment(calStripLeft);
+  const to = moment(calStripLeft).add(6, `d`);
   if (moment(from).month() === moment(to).month()) {
     return moment(from).format(`MMMM`);
   }
 
   return moment(from).format(`MMMM`) + ` / ` + moment(to).format(`MMMM`);
 };
-const getWeekStartIndex = (dayOffset, index) => {
-  let realIndex = index - index % 7 + dayOffset;
+
+/**
+ * Возвращает индекс ближайшего понедельника к дате из аргумента
+ * @param date
+ * @param beg
+ * @param dayOffset
+ * @returns {number}
+ */
+const getWeekStartIndex = (date, { beg, dayOffset }) => {
+  const index = moment.duration(moment(date).diff(beg)).asDays();
+  let weekStartIndex = index - index % 7 + dayOffset;
   if (index <= dayOffset) {
-    realIndex = index;
+    weekStartIndex = index;
   } else if (index % 7 < dayOffset) {
-    realIndex -= 7;
+    weekStartIndex -= 7;
   }
 
-  return realIndex;
+  return weekStartIndex;
 };
 
-const CalendarStrip = ({ activeDate, currentDates, today, setCurrentDates, setActiveDate }) => {
+/**
+ * Cколько дней до пн (если считать, что getDaysOffset(Понедельник) = 0)
+ * @param days
+ * @returns {number}
+ */
+const getDaysOffset = (days) => 7 % moment(days[0].date).weekday() + 1;
+
+/**
+ * Функция для рендера FlatList
+ * @param size
+ * @returns {function(*, *): {offset, length: *, index: *}}
+ */
+const getItemLayout = ({ size }) => (data, index) => ({ length: size, offset: size * index, index });
+
+/**
+ * Функция для рендера элемента FlatList
+ * @param size
+ * @param today
+ * @param activeDate
+ * @param dayOfWeek
+ * @param setActiveDate
+ * @returns {function({item: *}): *}
+ */
+const renderDay = ({ size, today, activeDate, setActiveDate }) => ({ item }) => (
+  <DayNumber
+    day={item.day}
+    size={size}
+    date={item.date}
+    dayOfWeek={item.dayOfWeek}
+    setActiveDate={setActiveDate}
+    isToday={moment(item.date).isSame(today, `day`)}
+    isActive={moment(item.date).isSame(activeDate, `day`)}
+  />
+);
+
+const CalendarStrip = ({ activeDate, calStripLeft, today, setCurrentDates, setActiveDate }) => {
   const listRef = useRef(null);
   const beg = moment(`2021-01-01`);
   const end = moment(`2022-01-01`);
 
   const days = fillDaysArray(beg, end);
-  const dayOffset = 7 % moment(days[0].date).weekday() + 1; // сколько дней до пн (если считать, что от пт до пн 3 дня)
+  const dayOffset = getDaysOffset(days);
 
   const windowWidth = Dimensions.get(`window`).width;
   const size = (windowWidth - 70) / 7;
 
+  const componentData = { beg, end, days, dayOffset, calStripLeft, size, today, activeDate, setActiveDate };
+
+  const scrollLeft = () => {
+    let date = moment(calStripLeft).subtract(7, `d`);
+    if (moment(date).isBefore(beg)) {
+      date = beg;
+    }
+    setCurrentDates(date);
+  };
+  const scrollRight = () => {
+    let date;
+    if (moment(calStripLeft).isSame(beg, `days`)) {
+      date = moment(calStripLeft).add(dayOffset, `d`);
+    } else {
+      date = moment(calStripLeft).add(7, `d`);
+    }
+    setCurrentDates(date);
+  };
+
   useEffect(() => {
-    const index = moment.duration(currentDates.from.diff(beg)).asDays();
-    const realIndex = getWeekStartIndex(dayOffset, index);
-    listRef.current.scrollToIndex({ index: realIndex });
+    listRef.current.scrollToIndex({ index: getWeekStartIndex(calStripLeft, componentData) });
+  }, [calStripLeft]);
 
-    getMonths(currentDates);
-  }, [currentDates]);
-
-  const getItemLayout = (data, index) => ({ length: size, offset: size * index, index });
-  const initialIndex = moment.duration(today.diff(beg)).asDays();
   return (
     <>
-      <Text style={{ textAlign: `center`, fontSize: 24 }}>{getMonths(currentDates)}</Text>
-      <View style={{ paddingHorizontal: 35, position: `relative` }}>
+      <Text style={styles.monthName}>{getMonths(calStripLeft)}</Text>
+      <View style={styles.listWrapper}>
         <FlatList
-          style={{ height: 100, paddingTop: 20 }}
+          style={styles.list}
           scrollEnabled={true}
           data={days}
           horizontal={true}
           ref={listRef}
-          getItemLayout={getItemLayout}
+          getItemLayout={getItemLayout(componentData)}
           initialNumToRender={10}
-          initialScrollIndex={getWeekStartIndex(dayOffset, initialIndex)}
+          initialScrollIndex={getWeekStartIndex(today, componentData)}
           keyExtractor={(item, i) => i.toString()}
-          renderItem={({ item }) => (
-            <View style={{ width: size, flex: 1, alignItems: `center`, justifyContent: `center` }}>
-              <DayNumber
-                day={item.day}
-                size={size}
-                date={item.date}
-                setActiveDate={setActiveDate}
-                isToday={moment(item.date).isSame(today, `day`)}
-                isActive={moment(item.date).isSame(activeDate, `day`)}
-              />
-              <Text style={{ textAlign: `center`, marginTop: 5 }}>{item.dayOfWeek}</Text>
-            </View>
-          )}
+          renderItem={renderDay(componentData)}
         />
       </View>
 
-      <TouchableOpacity style={{ position: `absolute`, top: 80, right: 10 }} title="next" onPress={() => {
-        let date;
-        if (currentDates.from.isSame(beg, `days`)) {
-          date = moment(currentDates.from).add(dayOffset, `d`);
-        } else {
-          date = moment(currentDates.from).add(7, `d`);
-        }
-        setCurrentDates({ from: date, to: moment(date).add(6, `d`) });
-      }}>
-        <AntDesign name="right" size="20"/>
-      </TouchableOpacity>
-      <TouchableOpacity style={{ position: `absolute`, top: 80, left: 10 }} title="prev" onPress={() => {
-        let date = moment(currentDates.from).subtract(7, `d`);
-        if (moment(date).isBefore(beg)) {
-          date = beg;
-        }
-        setCurrentDates({ from: date, to: moment(date).add(6, `d`) });
-      }}>
-        <AntDesign name="left" size="20"/>
-      </TouchableOpacity>
-      <Text style={{ textAlign: `center`, marginVertical: 5, fontSize: 18 }}>{activeDate && activeDate.format(`dddd D MMMM YYYY`)}</Text>
+      <Controls scrollLeft={scrollLeft} scrollRight={scrollRight}/>
+      <Text style={styles.selectedDate}>
+        {activeDate && activeDate.format(`dddd D MMMM YYYY`)}
+      </Text>
     </>
   );
 };
 
+const styles = StyleSheet.create({
+  monthName: {
+    textAlign: `center`,
+    fontSize: 24,
+  },
+  listWrapper: {
+    paddingHorizontal: 35,
+    position: `relative`,
+  },
+  list: {
+    height: 100,
+    paddingTop: 20,
+  },
+  selectedDate: {
+    textAlign: `center`,
+    marginVertical: 5,
+    fontSize: 18,
+  },
+});
+
 const mapDispatchToProps = dispatch => ({
-  setActiveDate (date) {
+  setActiveDate(date) {
     dispatch(setActiveDateAction(date));
   },
 });

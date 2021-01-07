@@ -21,6 +21,7 @@
         "semi": ["error", "always"],
         "quotes": ["error", "backtick"],
         "comma-dangle": ["warn", "always-multiline"],
-        "react/display-name": [0]
+        "react/display-name": [0],
+        "space-before-function-paren": [0]
     }
 }

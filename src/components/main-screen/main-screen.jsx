@@ -1,24 +1,35 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Button } from 'react-native';
-import Spacer from '../spacer/spacer';
+import { View, Text, Button, StyleSheet } from 'react-native';
 
 const MainScreen = ({ navigation }) => {
   return (
-    <View style={{ flex: 1, alignItems: `center`, justifyContent: `center` }}>
-      <Text style={{ fontSize: 32, marginBottom: 40 }}>Главная страница</Text>
-      <Button
-        title="Перейти к базе знаний"
-        onPress={() => navigation.navigate(`KnowledgeBase`)}
-      />
-      <Spacer />
-      <Button
-        title="Перейти к журналу записей"
-        onPress={() => navigation.navigate(`Registry`)}
-      />
+    <View style={styles.container}>
+      <Text style={styles.title}>Главная страница</Text>
+      <View style={styles.buttonContainer}>
+        <Button title="Перейти к базе знаний" onPress={() => navigation.navigate(`KnowledgeBase`)} />
+      </View>
+      <View style={styles.buttonContainer}>
+        <Button title="Перейти к журналу записей" onPress={() => navigation.navigate(`Registry`)} />
+      </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: `center`,
+    justifyContent: `center`,
+  },
+  title: {
+    fontSize: 32,
+    marginBottom: 40,
+  },
+  buttonContainer: {
+    marginBottom: 20,
+  },
+});
 
 MainScreen.propTypes = {
   navigation: PropTypes.any.isRequired,
