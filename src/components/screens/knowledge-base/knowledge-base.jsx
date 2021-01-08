@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Text, FlatList, SafeAreaView, StyleSheet } from 'react-native';
 
 import data from './data';
-import Link from '../link/link';
+import Link from '../../ui/link/link';
 
 const KnowledgeBase = () => {
   return (

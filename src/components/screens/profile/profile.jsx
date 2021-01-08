@@ -7,11 +7,11 @@ import { SvgUri } from 'react-native-svg';
 
 import styles from './styles';
 
-import { getActiveUserId, getUsers } from '../../store/reducers/app-store/selectors';
-import { setUserId } from '../../store/action';
-import { getRandomInt } from '../../utils/common';
+import { getActiveUserId, getUsers } from '../../../store/reducers/app-store/selectors';
+import { setUserId } from '../../../store/action';
+import { getRandomInt } from '../../../utils/common';
 
-import userProp from '../../types/user.prop';
+import userProp from '../../../types/user.prop';
 
 const renderRole = ({ item }) => (
   <Text style={styles.role}>

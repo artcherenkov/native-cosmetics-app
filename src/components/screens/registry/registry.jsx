@@ -5,7 +5,7 @@ import { SafeAreaView, View, StyleSheet } from 'react-native';
 import moment from 'moment';
 
 import CalendarStrip from './components/calendar-strip/calendar-strip';
-import { getActiveDate } from '../../store/reducers/app-state/selectors';
+import { getActiveDate } from '../../../store/reducers/app-state/selectors';
 import Agenda from './components/agenda/agenda';
 
 import events from './events-data.js';

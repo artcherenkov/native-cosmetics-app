@@ -3,7 +3,7 @@ import { Dimensions, FlatList, Text, View, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import { setActiveDate as setActiveDateAction } from '../../../../store/action';
+import { setActiveDate as setActiveDateAction } from '../../../../../store/action';
 import DayNumber from '../day-number/day-number';
 import Controls from '../controls/controls';
 

@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, FlatList, StyleSheet } from 'react-native';
 
-import { getUsers } from '../../store/reducers/app-store/selectors';
-import userProp from '../../types/user.prop';
+import { getUsers } from '../../../store/reducers/app-store/selectors';
+import userProp from '../../../types/user.prop';
 import Header from './components/header/header';
 import RatingRow from './components/rating-row/rating-row';
 

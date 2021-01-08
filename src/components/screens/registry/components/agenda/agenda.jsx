@@ -3,7 +3,7 @@ import { ScrollView, Text, View, StyleSheet } from 'react-native';
 import moment from 'moment';
 
 import ClientRegistration from '../client-registration/client-registration';
-import { range } from '../../../../utils/common';
+import { range } from '../../../../../utils/common';
 
 const getActiveDateEvents = (events, activeDate) => (
   events[Object.keys(events).find(key => moment(key).isSame(activeDate, `d`))]

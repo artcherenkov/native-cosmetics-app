@@ -5,12 +5,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-import Registry from './registry/registry';
+import Registry from './screens/registry/registry';
 // import MainScreen from './main-screen/main-screen';
-import KnowledgeBase from './knowledge-base/knowledge-base';
-import Profile from './profile/profile';
-import Rating from './rating/rating';
-import EventScreen from './event-screen/event-screen';
+import KnowledgeBase from './screens/knowledge-base/knowledge-base';
+import Profile from './screens/profile/profile';
+import Rating from './screens/rating/rating';
+import EventScreen from './screens/event-screen/event-screen';
 import { Button } from 'react-native';
 
 const Tab = createBottomTabNavigator();
