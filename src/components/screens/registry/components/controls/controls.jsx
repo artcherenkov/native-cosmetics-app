@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { TouchableOpacity, StyleSheet } from 'react-native';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 const Controls = ({ scrollLeft, scrollRight }) => (
   <>
     <TouchableOpacity style={[styles.button, styles.next]} title="next" onPress={scrollRight}>
-      <AntDesign name="right" size="20"/>
+      <Entypo name="chevron-right" size={20} />
     </TouchableOpacity>
     <TouchableOpacity style={[styles.button, styles.prev]} title="prev" onPress={scrollLeft}>
-      <AntDesign name="left" size="20"/>
+      <Entypo name="chevron-left" size={20} />
     </TouchableOpacity>
   </>
 );
