@@ -1,41 +1,209 @@
-import React, { useState } from 'react';
-import { SafeAreaView, View, Text, StyleSheet, Button, TouchableOpacity } from 'react-native';
-// import { register, auth } from '../../../store/api-action';
-import { useDispatch, connect } from 'react-redux';
+import React, { useState, useCallback, useReducer, useEffect, useRef } from 'react';
+import { SafeAreaView, View, Text, StyleSheet, Button, TouchableOpacity, Alert } from 'react-native';
+import { register, auth } from '../../../store/api-action';
+import { connect, useDispatch } from 'react-redux';
 import { toggleAuthStatus, toggleAuthType } from "../../../store/action";
 import { AuthType } from "../../../store/reducers/app-user/app-user";
 import Input from "../../ui/input/input";
 
-const Auth = ({ authType, handleAuthStatusTogglePress }) => {
-  const [credentials, setCredentials] = useState({ login: ``, password: `` });
+const FormInput = {
+  REGISTER: {
+    login: {
+      label: `Логин (email)`,
+      error: `Неверный логин`,
+      required: true,
+    },
+    password: {
+      label: `Пароль`,
+      error: `Неверный пароль`,
+      secureTextEntry: true,
+      minLength: 4,
+      required: true,
+    },
+    password_again: {
+      label: `Пароль ещё раз`,
+      error: `Пароли не совпадают`,
+      secureTextEntry: true,
+      minLength: 4,
+      required: true,
+    },
+    id_ycl: {
+      label: `ID работника`,
+      error: `Ошибка`,
+      number: true,
+      required: true,
+    },
+    id_branch: {
+      label: `ID предприятия`,
+      error: `Ошибка`,
+      number: true,
+      required: true,
+    },
+    leader: {
+      label: `Руководитель`,
+      error: `Ошибка`,
+      required: true,
+    },
+    role: {
+      label: `Должность`,
+      error: `Ошибка`,
+      required: true,
+    },
+  },
+  LOGIN: {
+    login: {
+      label: `Логин (email)`,
+      error: `Неверный логин`,
+      required: true,
+    },
+    password: {
+      label: `Пароль`,
+      error: `Неверный пароль`,
+      secureTextEntry: true,
+      minLength: 4,
+      required: true,
+    },
+  },
+};
+
+const FORM_INPUT_UPDATE = `FORM_INPUT_UPDATE`;
+const CHANGE_AUTH_TYPE = `CHANGE_AUTH_TYPE`;
+const SET_FIELD_ERROR = `SET_FIELD_ERROR`;
+
+const formReducer = (state, action) => {
+  switch (action.type) {
+    case FORM_INPUT_UPDATE: {
+      const updatedValues = {
+        ...state.inputValues,
+        [action.input]: action.value,
+      };
+      const updatedValidities = {
+        ...state.inputValidities,
+        [action.input]: action.isValid,
+      };
+      let updatedFormIsValid = true;
+      for (const key in updatedValidities) {
+        updatedFormIsValid = updatedFormIsValid && updatedValidities[key];
+      }
+      return {
+        ...state,
+        formIsValid: updatedFormIsValid,
+        inputValidities: updatedValidities,
+        inputValues: updatedValues,
+      };
+    }
+    case CHANGE_AUTH_TYPE: {
+      const isSignup = !state.isSignup;
+      const filteredInputs = Object.keys(FormInput[isSignup ? AuthType.REGISTER : AuthType.LOGIN]);
+      return {
+        inputValues: filteredInputs.reduce((acc, key) => {
+          acc = { ...acc, [key]: `` };
+          return acc;
+        }, {}),
+        inputValidities: filteredInputs.reduce((acc, key) => {
+          acc = { ...acc, [key]: false };
+          return acc;
+        }, {}),
+        formIsValid: false,
+        isSignup,
+      };
+    }
+    case SET_FIELD_ERROR: {
+      const { isSignup } = state;
+      const filteredInputs = Object.keys(FormInput[isSignup ? AuthType.REGISTER : AuthType.LOGIN]);
+      return {
+        ...state,
+        customValidities: filteredInputs.reduce((acc, key) => {
+          if (action.invalidFields.includes(key)) {
+            acc = { ...acc, [key]: false };
+            return acc;
+          }
+          acc = { ...acc, [key]: true };
+          return acc;
+        }, {}),
+      };
+    }
+  }
+  return state;
+};
+
+const Auth = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
   const dispatch = useDispatch();
 
-  const handleChangeText = (name) => (text) => setCredentials({ ...credentials, [name]: text });
+  const [formState, dispatchFormState] = useReducer(formReducer, {
+    inputValues: Object.keys(FormInput[AuthType.REGISTER]).reduce((acc, key) => {
+      acc = { ...acc, [key]: `` };
+      return acc;
+    }, {}),
+    inputValidities: Object.keys(FormInput[AuthType.REGISTER]).reduce((acc, key) => {
+      acc = { ...acc, [key]: false };
+      return acc;
+    }, {}),
+    customValidities: Object.keys(FormInput[AuthType.REGISTER]).reduce((acc, key) => {
+      acc = { ...acc, [key]: true };
+      return acc;
+    }, {}),
+    formIsValid: false,
+    isSignup: true,
+  });
+
+  useEffect(() => {
+    if (error) {
+      Alert.alert(`An Error Occurred!`, error, [{ text: `Okay` }]);
+    }
+  }, [error]);
+
+  const inputChangeHandler = useCallback(
+    (inputIdentifier, inputValue, inputValidity) => {
+      dispatchFormState({
+        type: FORM_INPUT_UPDATE,
+        value: inputValue,
+        isValid: inputValidity,
+        input: inputIdentifier,
+      });
+    },
+    [dispatchFormState],
+  );
 
   return (
       <SafeAreaView style={styles.container}>
         <View style={styles.formContainer}>
-          <Text style={styles.header}>{authType === AuthType.REGISTER ? `Регистрация` : `Вход`}</Text>
-          <Input name="login" label="Логин" error="Неверный логин" handleChangeText={handleChangeText} />
-          <Input name="password" label="Пароль" error="Неверный пароль" handleChangeText={handleChangeText} />
-          {authType === AuthType.REGISTER && <>
-            <Input name="password_again" label="Пароль" error="Пароли не совпадают" handleChangeText={handleChangeText} />
-            <Input name="id_ycl" label="ID работника" error="Неверный пароль" handleChangeText={handleChangeText} />
-            <Input name="id_branch" label="ID предприятия" error="Ошибка" handleChangeText={handleChangeText} />
-            <Input name="leader" label="Руководитель" error="Ошибка" handleChangeText={handleChangeText} />
-            <Input name="role" label="Должность" error="Ошибка" handleChangeText={handleChangeText} />
-          </>}
+          <Text style={styles.header}>{formState.isSignup ? `Регистрация` : `Вход`}</Text>
+
+          {Object.entries(FormInput[formState.isSignup ? AuthType.REGISTER : AuthType.LOGIN]).map(([key, value]) => (
+              <Input
+                  {...value}
+                  id={key}
+                  key={`input-${key}-${formState.isSignup}`}
+                  name={key}
+                  autoCapitalize="none"
+                  onInputChange={inputChangeHandler}
+                  initialValue=""
+                  initiallyValid={formState.customValidities[key]}
+                  // ref={someRef}
+              />
+          ))}
           <View style={styles.controlsContainer}>
             <Button
-                title={authType === AuthType.REGISTER ? `Зарегистрироваться` : `Войти`}
+                title={formState.isSignup ? `Зарегистрироваться` : `Войти`}
                 onPress={() => {
-                  console.log(credentials);
-                  dispatch(toggleAuthStatus());
+                  console.log(formState.inputValues);
+                  if (formState.isSignup) {
+                    dispatch(register(formState.inputValues));
+                  } else {
+                    dispatch(auth(formState.inputValues));
+                  }
                 }}
             />
-            <TouchableOpacity style={styles.changeAuthType} onPress={handleAuthStatusTogglePress}>
+            <TouchableOpacity style={styles.changeAuthType} onPress={() => {
+              // console.log(someRef);
+              // dispatchFormState({ type: CHANGE_AUTH_TYPE });
+              dispatchFormState({ type: SET_FIELD_ERROR, invalidFields: [`login`, `password`] });
+            }}>
               <Text style={styles.changeAuthTypeText}>
-                {authType === AuthType.REGISTER ? `Уже есть аккаунт? Войти` : `Ещё нет аккаунта? Зарегистрироваться`}
+                {formState.isSignup ? `Уже есть аккаунт? Войти` : `Ещё нет аккаунта? Зарегистрироваться`}
               </Text>
             </TouchableOpacity>
           </View>
@@ -78,6 +246,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   handleAuthStatusTogglePress() {
     dispatch(toggleAuthType());
+  },
+  login() {
+    dispatch(toggleAuthStatus(true));
   },
 });
 

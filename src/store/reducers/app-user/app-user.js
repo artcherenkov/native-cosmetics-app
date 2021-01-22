@@ -9,7 +9,7 @@ const initialState = {
   userId: null,
   token: null,
   isLoggedIn: false,
-  authType: AuthType.REGISTER,
+  authType: AuthType.LOGIN,
 };
 
 const appUser = (state = initialState, action) => {
@@ -19,7 +19,7 @@ const appUser = (state = initialState, action) => {
       return { ...state, userId, token };
     }
     case ActionType.TOGGLE_AUTH_STATUS: {
-      return { ...state, isLoggedIn: !state.isLoggedIn };
+      return { ...state, isLoggedIn: action.payload || !state.isLoggedIn };
     }
     case ActionType.TOGGLE_AUTH_TYPE: {
       const currentType = state.authType;

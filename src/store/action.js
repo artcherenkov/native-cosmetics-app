@@ -27,8 +27,9 @@ export const setCredentials = (credentials) => ({
   payload: credentials,
 });
 
-export const toggleAuthStatus = () => ({
+export const toggleAuthStatus = (isLoggedIn) => ({
   type: ActionType.TOGGLE_AUTH_STATUS,
+  payload: isLoggedIn,
 });
 
 export const toggleAuthType = () => ({
