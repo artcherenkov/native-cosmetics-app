@@ -1,5 +1,6 @@
 export const ActionType = {
   FETCH_USERS: `FETCH_USERS`,
+  FETCH_SERVICES: `FETCH_SERVICES`,
   SET_USER_ID: `SET_USER_ID`,
   SET_ACTIVE_DATE: `SET_ACTIVE_DATE`,
   SET_CREDENTIALS: `SET_CREDENTIALS`,
@@ -12,6 +13,11 @@ export const ActionType = {
 export const fetchUsers = (users) => ({
   type: ActionType.FETCH_USERS,
   payload: users,
+});
+
+export const fetchServices = (services, date) => ({
+  type: ActionType.FETCH_SERVICES,
+  payload: { services, date },
 });
 
 export const setUserId = (userId) => ({

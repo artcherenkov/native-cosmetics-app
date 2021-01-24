@@ -9,17 +9,20 @@ import { getActiveDate } from '../../../store/reducers/app-state/selectors';
 import Agenda from './components/agenda/agenda';
 
 import events from './events-data.js';
+import { adaptServicesToClient } from "../../core/adapter/services";
+import { fetchServices } from "../../../store/api-action";
 
-// todo рефакторинг! Проп тайпсы!
 // todo добавить обрезание длинных названий событий
 // todo добавить возможность перехода к конкретной дате по клику на описание дня (прямо под строкой календаря)?
 
-const Registry = ({ navigation, activeDate }) => {
+const Registry = ({ ourEvents, navigation, activeDate, token, fetchServices }) => {
   const today = moment();
   const daysToWeekStart = moment(today).weekday() - 1; // moment().day(0) - воскресенье, значит надо отнять 1 день
   const [calStripLeft, setCurrentDates] = useState(moment(today).subtract(daysToWeekStart, `d`));
 
-  console.log(moment(calStripLeft).format(`D dd MMM YYYY`));
+  console.log(ourEvents);
+
+  fetchServices(`2021-02-03`);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -54,7 +57,14 @@ Registry.propTypes = {
 
 const mapStateToProps = state => ({
   activeDate: getActiveDate(state),
+  token: state.USER.token,
+});
+
+const mapDispatchToProps = dispatch => ({
+  fetchServices(date) {
+    dispatch(fetchServices(date));
+  },
 });
 
 export { Registry };
-export default connect(mapStateToProps, null)(Registry);
+export default connect(mapStateToProps, mapDispatchToProps)(Registry);
