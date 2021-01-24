@@ -1,8 +1,17 @@
-import React, { useState, useCallback, useReducer, useEffect, useRef } from 'react';
-import { SafeAreaView, View, Text, StyleSheet, Button, TouchableOpacity, Alert } from 'react-native';
-import { register, auth } from '../../../store/api-action';
-import { connect, useDispatch } from 'react-redux';
-import { toggleAuthStatus, toggleAuthType } from "../../../store/action";
+import React, { useState, useCallback, useReducer, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+  SafeAreaView,
+} from 'react-native';
+import { register, login } from '../../../store/api-action';
+import { connect } from 'react-redux';
+import { setLoading, toggleAuthType } from "../../../store/action";
 import { AuthType } from "../../../store/reducers/app-user/app-user";
 import Input from "../../ui/input/input";
 
@@ -10,12 +19,12 @@ const FormInput = {
   REGISTER: {
     login: {
       label: `Логин (email)`,
-      error: `Неверный логин`,
+      error: `Некорректный логин`,
       required: true,
     },
     password: {
       label: `Пароль`,
-      error: `Неверный пароль`,
+      error: `Некорректный пароль`,
       secureTextEntry: true,
       minLength: 4,
       required: true,
@@ -96,6 +105,7 @@ const formReducer = (state, action) => {
       const isSignup = !state.isSignup;
       const filteredInputs = Object.keys(FormInput[isSignup ? AuthType.REGISTER : AuthType.LOGIN]);
       return {
+        ...state,
         inputValues: filteredInputs.reduce((acc, key) => {
           acc = { ...acc, [key]: `` };
           return acc;
@@ -127,11 +137,8 @@ const formReducer = (state, action) => {
   return state;
 };
 
-const Auth = () => {
-  const [isLoading, setIsLoading] = useState(false);
+const Auth = ({ login, register, isLoading }) => {
   const [error, setError] = useState();
-  const dispatch = useDispatch();
-
   const [formState, dispatchFormState] = useReducer(formReducer, {
     inputValues: Object.keys(FormInput[AuthType.REGISTER]).reduce((acc, key) => {
       acc = { ...acc, [key]: `` };
@@ -151,7 +158,7 @@ const Auth = () => {
 
   useEffect(() => {
     if (error) {
-      Alert.alert(`An Error Occurred!`, error, [{ text: `Okay` }]);
+      dispatchFormState({ type: SET_FIELD_ERROR, invalidFields: error.invalidFields });
     }
   }, [error]);
 
@@ -167,59 +174,69 @@ const Auth = () => {
     [dispatchFormState],
   );
 
-  return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.formContainer}>
-          <Text style={styles.header}>{formState.isSignup ? `Регистрация` : `Вход`}</Text>
+  const handleChangeAuthTypePress = () => dispatchFormState({ type: CHANGE_AUTH_TYPE });
+  const handleThrowErrorClick = () => setError({ invalidFields: [`login`, `password`] });
+  const handleAuthButtonClick = () => {
+    if (formState.formIsValid) {
+      formState.isSignup
+        ? register(formState.inputValues)
+        : login(formState.inputValues);
+    }
+  };
 
-          {Object.entries(FormInput[formState.isSignup ? AuthType.REGISTER : AuthType.LOGIN]).map(([key, value]) => (
-              <Input
-                  {...value}
-                  id={key}
-                  key={`input-${key}-${formState.isSignup}`}
-                  name={key}
-                  autoCapitalize="none"
-                  onInputChange={inputChangeHandler}
-                  initialValue=""
-                  initiallyValid={formState.customValidities[key]}
-                  // ref={someRef}
-              />
-          ))}
-          <View style={styles.controlsContainer}>
-            <Button
-                title={formState.isSignup ? `Зарегистрироваться` : `Войти`}
-                onPress={() => {
-                  console.log(formState.inputValues);
-                  if (formState.isSignup) {
-                    dispatch(register(formState.inputValues));
-                  } else {
-                    dispatch(auth(formState.inputValues));
-                  }
-                }}
-            />
-            <TouchableOpacity style={styles.changeAuthType} onPress={() => {
-              // console.log(someRef);
-              // dispatchFormState({ type: CHANGE_AUTH_TYPE });
-              dispatchFormState({ type: SET_FIELD_ERROR, invalidFields: [`login`, `password`] });
-            }}>
-              <Text style={styles.changeAuthTypeText}>
-                {formState.isSignup ? `Уже есть аккаунт? Войти` : `Ещё нет аккаунта? Зарегистрироваться`}
-              </Text>
-            </TouchableOpacity>
+  return (
+      <SafeAreaView style={styles.screen}>
+        <ScrollView contentContainerStyle={styles.container}>
+          <View style={styles.formContainer}>
+            <Text style={styles.header}>{formState.isSignup ? `Регистрация` : `Вход`}</Text>
+            {Object.entries(FormInput[formState.isSignup ? AuthType.REGISTER : AuthType.LOGIN]).map(([key, value]) => (
+                <Input
+                    {...value}
+                    id={key}
+                    key={`input-${key}-${formState.isSignup}`}
+                    name={key}
+                    autoCapitalize="none" onInputChange={inputChangeHandler}
+                    initialValue=""
+                    initiallyValid={formState.customValidities[key]}
+                />
+            ))}
+            <View style={styles.controlsContainer}>
+              {isLoading
+                ? <ActivityIndicator/>
+                : <Button title={formState.isSignup ? `Зарегистрироваться` : `Войти`} onPress={handleAuthButtonClick}/>
+              }
+              <TouchableOpacity style={styles.changeAuthType} onPress={handleChangeAuthTypePress}>
+                <Text style={styles.changeAuthTypeText}>
+                  {formState.isSignup ? `Уже есть аккаунт? Войти` : `Ещё нет аккаунта? Зарегистрироваться`}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.changeAuthType} onPress={handleThrowErrorClick}>
+                <Text style={styles.changeAuthTypeText}>Set fake error</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </ScrollView>
       </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    flexGrow: 1,
+  },
   container: {
     flex: 1,
+    flexGrow: 1,
     justifyContent: `center`,
     alignItems: `center`,
   },
   formContainer: {
+    justifyContent: `center`,
+    // alignItems: `center`,
+    // flex: 1,
     width: `70%`,
+    // height: 300,
   },
   header: {
     fontSize: 24,
@@ -241,14 +258,22 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   authType: state.USER.authType,
+  isLoading: state.STATE.isLoading,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   handleAuthStatusTogglePress() {
     dispatch(toggleAuthType());
   },
-  login() {
-    dispatch(toggleAuthStatus(true));
+  login(credentials) {
+    dispatch(setLoading(true));
+    dispatch(login(credentials))
+      .then(() => dispatch(setLoading(false)));
+  },
+  register(credentials) {
+    dispatch(setLoading(true));
+    dispatch(register(credentials))
+      .then(() => dispatch(setLoading(false)));
   },
 });
 

@@ -23,10 +23,9 @@ const inputReducer = (state, action) => {
 };
 
 const Input = props => {
-  console.log(props.initiallyValid);
   const [inputState, dispatch] = useReducer(inputReducer, {
     value: props.initialValue ? props.initialValue : ``,
-    isValid: props.initiallyValid,
+    isValid: false,
     touched: false,
   });
 
@@ -39,7 +38,7 @@ const Input = props => {
   }, [inputState, onInputChange, id]);
 
   const textChangeHandler = text => {
-    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     let isValid = true;
     if (props.required && text.trim().length === 0) {
       isValid = false;
@@ -63,7 +62,9 @@ const Input = props => {
     dispatch({ type: INPUT_BLUR });
   };
 
-  const shouldShowError = (!props.initiallyValid && !inputState.touched) || (!inputState.isValid && inputState.touched);
+  const isErrorFromParent = !props.initiallyValid && !inputState.touched;
+  const isValidationError = !inputState.isValid && inputState.touched;
+  const shouldShowError = isErrorFromParent || isValidationError;
 
   return (
       <View style={styles.inputContainer}>
@@ -74,7 +75,6 @@ const Input = props => {
             value={inputState.value}
             onChangeText={textChangeHandler}
             onBlur={lostFocusHandler}
-            ref={inputState.ref}
         />
         {shouldShowError && (
             <Text style={styles.errorMessage}>{props.error}</Text>

@@ -5,6 +5,7 @@ export const ActionType = {
   SET_CREDENTIALS: `SET_CREDENTIALS`,
   TOGGLE_AUTH_STATUS: `TOGGLE_AUTH_STATUS`,
   TOGGLE_AUTH_TYPE: `TOGGLE_AUTH_TYPE`,
+  SET_LOADING: `SET_LOADING`,
 };
 
 export const fetchUsers = (users) => ({
@@ -34,4 +35,9 @@ export const toggleAuthStatus = (isLoggedIn) => ({
 
 export const toggleAuthType = () => ({
   type: ActionType.TOGGLE_AUTH_TYPE,
+});
+
+export const setLoading = (isLoading) => ({
+  type: ActionType.SET_LOADING,
+  payload: isLoading,
 });

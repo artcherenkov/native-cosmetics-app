@@ -11,7 +11,7 @@ export const createAPI = () => {
   const onSuccess = (response) => response;
 
   const onFail = (err) => {
-    throw err;
+    throw err.message;
   };
 
   api.interceptors.response.use(onSuccess, onFail);

@@ -15,8 +15,8 @@ const initialState = {
 const appUser = (state = initialState, action) => {
   switch (action.type) {
     case ActionType.SET_CREDENTIALS: {
-      const { userId, token } = action.payload;
-      return { ...state, userId, token };
+      const { token } = action.payload;
+      return { ...state, token, isLoggedIn: true };
     }
     case ActionType.TOGGLE_AUTH_STATUS: {
       return { ...state, isLoggedIn: action.payload || !state.isLoggedIn };
