@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import moment from "moment";
 
 const getBounds = ({ begin, duration }) => {
   return ({
-    top: begin.hours() * 60 + begin.minutes(),
+    top: moment(begin).hours() * 60 + moment(begin).minutes(),
     height: duration,
   });
 };
@@ -21,7 +22,7 @@ const ClientRegistration = (props) => {
   return (
     <TouchableOpacity style={[styles.container, getBounds(registration)]} onPress={handlePress}>
       <Text style={styles.title}>
-        {registration.title}
+        {registration.clientName}
       </Text>
     </TouchableOpacity>
   );

@@ -22,8 +22,6 @@ const Registry = ({ ourEvents, navigation, activeDate, token, fetchServices }) =
 
   console.log(ourEvents);
 
-  fetchServices(`2021-02-03`);
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.stripContainer}>

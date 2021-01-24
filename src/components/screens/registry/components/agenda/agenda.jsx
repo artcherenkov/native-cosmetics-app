@@ -1,13 +1,12 @@
-import React from 'react';
-import { ScrollView, Text, View, StyleSheet } from 'react-native';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { ScrollView, Text, View, StyleSheet, ActivityIndicator } from 'react-native';
 import moment from 'moment';
 
 import ClientRegistration from '../client-registration/client-registration';
 import { range } from '../../../../../utils/common';
-
-const getActiveDateEvents = (events, activeDate) => (
-  events[Object.keys(events).find(key => moment(key).isSame(activeDate, `d`))]
-);
+import { fetchServices } from "../../../../../store/api-action";
+import { setLoading } from "../../../../../store/action";
 
 const getHourStyles = (index) => {
   const res = [styles.hourContainer];
@@ -22,22 +21,39 @@ const formatWithLeadingZero = (number) => number < 10 ? `0${number}:00` : `${num
 
 // todo положить events в редакс, брать activeDate из редакса
 const Agenda = (props) => {
-  const { activeDate, events, navigation } = props;
-  const activeDateEvents = getActiveDateEvents(events, activeDate);
+  const { activeDate, services, navigation, fetchServices, isLoading } = props;
+  const activeDateEvents = services[moment(activeDate).format(`YYYY-MM-DD`)];
+  console.log(activeDateEvents);
+
+  useEffect(() => {
+    if (!services[moment(activeDate).format(`YYYY-MM-DD`)]) {
+      fetchServices(moment(activeDate).format(`YYYY-MM-DD`));
+    }
+  }, [activeDate]);
 
   return (
-    <ScrollView style={styles.agendaContainer}>
-      {range(25).map((i) => (
-        <View key={`hour-${i}`} style={getHourStyles(i)}>
-          <Text style={styles.hour}>
-            {formatWithLeadingZero(i)}
-          </Text>
-        </View>
-      ))}
-      {activeDateEvents && [...activeDateEvents].map((item, i) => (
-        <ClientRegistration key={`event-${i}`} navigation={navigation} registration={item} activeDate={activeDate}/>
-      ))}
-    </ScrollView>
+      <>
+        {isLoading && <View style={styles.overlay}>
+          <ActivityIndicator size="large"/>
+        </View>}
+        <ScrollView style={styles.agendaContainer}>
+          {range(25).map((i) => (
+              <View key={`hour-${i}`} style={getHourStyles(i)}>
+                <Text style={styles.hour}>
+                  {formatWithLeadingZero(i)}
+                </Text>
+              </View>
+          ))}
+          {activeDateEvents && [...activeDateEvents.events].map((item, i) => (
+              <ClientRegistration
+                  key={`event-${i}`}
+                  navigation={navigation}
+                  registration={item}
+                  activeDate={activeDate}
+              />
+          ))}
+        </ScrollView>
+      </>
   );
 };
 
@@ -59,6 +75,32 @@ const styles = StyleSheet.create({
     top: -8,
     fontSize: 12,
   },
+  overlay: {
+    position: `absolute`,
+    display: `flex`,
+    justifyContent: `center`,
+    alignItems: `center`,
+    top: 0,
+    left: 0,
+    height: `100%`,
+    width: `100%`,
+    zIndex: 500,
+    backgroundColor: `rgba(255, 255, 255, .7)`,
+  },
 });
 
-export default Agenda;
+const mapStateToProps = (state) => ({
+  services: state.STORE.services,
+  isLoading: state.STATE.isLoading,
+});
+
+const mapDispatchToProps = dispatch => ({
+  fetchServices(date) {
+    dispatch(setLoading(true));
+    dispatch(fetchServices(date))
+      .then(() => dispatch(setLoading(false)));
+  },
+});
+
+export { Agenda };
+export default connect(mapStateToProps, mapDispatchToProps)(Agenda);
