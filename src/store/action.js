@@ -6,6 +6,7 @@ export const ActionType = {
   TOGGLE_AUTH_STATUS: `TOGGLE_AUTH_STATUS`,
   TOGGLE_AUTH_TYPE: `TOGGLE_AUTH_TYPE`,
   SET_LOADING: `SET_LOADING`,
+  SET_ERROR: `SET_ERROR`,
 };
 
 export const fetchUsers = (users) => ({
@@ -40,4 +41,9 @@ export const toggleAuthType = () => ({
 export const setLoading = (isLoading) => ({
   type: ActionType.SET_LOADING,
   payload: isLoading,
+});
+
+export const setError = (error) => ({
+  type: ActionType.SET_ERROR,
+  payload: error,
 });

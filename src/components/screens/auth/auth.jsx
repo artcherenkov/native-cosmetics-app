@@ -8,10 +8,11 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import { register, login } from '../../../store/api-action';
 import { connect } from 'react-redux';
-import { setLoading, toggleAuthType } from "../../../store/action";
+import { setError, setLoading, toggleAuthType } from "../../../store/action";
 import { AuthType } from "../../../store/reducers/app-user/app-user";
 import Input from "../../ui/input/input";
 
@@ -137,28 +138,27 @@ const formReducer = (state, action) => {
   return state;
 };
 
-const Auth = ({ login, register, isLoading }) => {
-  const [error, setError] = useState();
+const Auth = ({ login, register, isLoading, error, resetError }) => {
   const [formState, dispatchFormState] = useReducer(formReducer, {
-    inputValues: Object.keys(FormInput[AuthType.REGISTER]).reduce((acc, key) => {
+    inputValues: Object.keys(FormInput[AuthType.LOGIN]).reduce((acc, key) => {
       acc = { ...acc, [key]: `` };
       return acc;
     }, {}),
-    inputValidities: Object.keys(FormInput[AuthType.REGISTER]).reduce((acc, key) => {
+    inputValidities: Object.keys(FormInput[AuthType.LOGIN]).reduce((acc, key) => {
       acc = { ...acc, [key]: false };
       return acc;
     }, {}),
-    customValidities: Object.keys(FormInput[AuthType.REGISTER]).reduce((acc, key) => {
+    customValidities: Object.keys(FormInput[AuthType.LOGIN]).reduce((acc, key) => {
       acc = { ...acc, [key]: true };
       return acc;
     }, {}),
     formIsValid: false,
-    isSignup: true,
+    isSignup: false,
   });
 
   useEffect(() => {
     if (error) {
-      dispatchFormState({ type: SET_FIELD_ERROR, invalidFields: error.invalidFields });
+      Alert.alert(`Ошибка`, error, [{ text: `Ок`, onPress: resetError }]);
     }
   }, [error]);
 
@@ -175,7 +175,7 @@ const Auth = ({ login, register, isLoading }) => {
   );
 
   const handleChangeAuthTypePress = () => dispatchFormState({ type: CHANGE_AUTH_TYPE });
-  const handleThrowErrorClick = () => setError({ invalidFields: [`login`, `password`] });
+  // const handleThrowErrorClick = () => setError({ invalidFields: [`login`, `password`] });
   const handleAuthButtonClick = () => {
     if (formState.formIsValid) {
       formState.isSignup
@@ -210,9 +210,9 @@ const Auth = ({ login, register, isLoading }) => {
                   {formState.isSignup ? `Уже есть аккаунт? Войти` : `Ещё нет аккаунта? Зарегистрироваться`}
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.changeAuthType} onPress={handleThrowErrorClick}>
-                <Text style={styles.changeAuthTypeText}>Set fake error</Text>
-              </TouchableOpacity>
+              {/*<TouchableOpacity style={styles.changeAuthType} onPress={handleThrowErrorClick}>*/}
+              {/*  <Text style={styles.changeAuthTypeText}>Set fake error</Text>*/}
+              {/*</TouchableOpacity>*/}
             </View>
           </View>
         </ScrollView>
@@ -233,10 +233,7 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     justifyContent: `center`,
-    // alignItems: `center`,
-    // flex: 1,
     width: `70%`,
-    // height: 300,
   },
   header: {
     fontSize: 24,
@@ -259,6 +256,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   authType: state.USER.authType,
   isLoading: state.STATE.isLoading,
+  error: state.STATE.error,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -274,6 +272,9 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(setLoading(true));
     dispatch(register(credentials))
       .then(() => dispatch(setLoading(false)));
+  },
+  resetError() {
+    dispatch(setError());
   },
 });
 
