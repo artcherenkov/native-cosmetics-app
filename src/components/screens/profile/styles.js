@@ -23,8 +23,12 @@ const styles = StyleSheet.create({
   avatarWrapper: {
     height: 100,
     width: 100,
-    borderRadius: 100 / 2,
     backgroundColor: `rgb(242, 242, 242)`,
+  },
+  avatar: {
+    width: `100%`,
+    height: `100%`,
+    borderRadius: 100 / 2,
   },
   headerContent: {
     flex: 1,
@@ -40,6 +44,11 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 26,
+    marginBottom: 5,
+  },
+  login: {
+    fontSize: 14,
+    color: `#434343`,
   },
   ratingWrapper: {
     flex: 1,
@@ -65,9 +74,14 @@ const styles = StyleSheet.create({
     marginTop: 30,
     borderColor: `green`,
   },
+  userInfoTitle: {
+    fontSize: 14,
+    marginBottom: 10,
+    color: `#434343`,
+  },
   userInfo: {
     marginBottom: 20,
-    fontSize: 18,
+    fontSize: 20,
   },
   role: {
     marginBottom: 20,

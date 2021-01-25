@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { View, Text, Button, FlatList } from 'react-native';
-import { SvgUri } from 'react-native-svg';
+import { View, Text, Button, FlatList, Image } from 'react-native';
 
 import styles from './styles';
 
@@ -12,60 +11,78 @@ import { setUserId } from '../../../store/action';
 import { getRandomInt } from '../../../utils/common';
 
 import userProp from '../../../types/user.prop';
+import { fetchUser } from "../../../store/api-action";
 
 const renderRole = ({ item }) => (
-  <Text style={styles.role}>
-    {`\t`}{item.id}. {item.role}
-  </Text>
+    <Text style={styles.role}>
+      {`\t`}{item.id}. {item.role}
+    </Text>
 );
 
-const Profile = ({ navigation, users, activeUserId, onGetAnotherUserClick }) => {
-  const user = users.find(user => user.id === activeUserId);
+const Profile = ({ navigation, users, activeUserId, onGetAnotherUserClick, user, fetchUserData, isLoggedIn }) => {
+
+  const { avatar, branch, city, id_branch: branchId, id_ycl: yclId, leader, login, name, role } = user;
+  console.log(avatar);
+
+  useEffect(() => {
+    fetchUserData();
+  }, [isLoggedIn]);
 
   return (
-    <View style={styles.container}>
-      {!user
-        ? <Text>Loading...</Text>
-        : <View style={styles.card}>
-          <View style={styles.headerWrapper}>
-            <View style={styles.avatarWrapper}>
-              {/* <SvgUri width="100%" height="100%" uri={user.avatar}/> */}
-            </View>
-            <View style={styles.headerContent}>
-              <View style={styles.nameWrapper}>
-                <Text style={styles.name}>{user.name}</Text>
-              </View>
-              <View style={styles.ratingWrapper}>
-                <View style={styles.rateItem}>
-                  <Text style={styles.rating}>{user.rating}</Text>
-                  <Text>Рейтинг</Text>
+      <View style={styles.container}>
+        {!user
+          ? <Text>Loading...</Text>
+          : <View style={styles.card}>
+              <View style={styles.headerWrapper}>
+                <View style={styles.avatarWrapper}>
+                  <Image style={styles.avatar} source={{ uri: avatar }} />
                 </View>
-                <View style={styles.rateItem}>
-                  <Text style={styles.place}>{user.place}</Text>
-                  <Text>Место</Text>
+                <View style={styles.headerContent}>
+                  <View style={styles.nameWrapper}>
+                    <Text style={styles.name}>{name}</Text>
+                    <Text style={styles.login}>Логин: {login}</Text>
+                  </View>
+                  <View style={styles.ratingWrapper}>
+                    <View style={styles.rateItem}>
+                      <Text style={styles.rating}>{user.rating || `...`}</Text>
+                      <Text>Рейтинг</Text>
+                    </View>
+                    <View style={styles.rateItem}>
+                      <Text style={styles.place}>{user.place || `...`}</Text>
+                      <Text>Место</Text>
+                    </View>
+                  </View>
+                  <Button title="Перейти к рейтингу" onPress={() => navigation.navigate(`Rating`)}/>
                 </View>
               </View>
-              <Button title="Перейти к рейтингу" onPress={() => navigation.navigate(`Rating`)}/>
-            </View>
-          </View>
-          <View style={styles.bodyWrapper}>
-            <Text style={styles.userInfo}>Город: {user.city}</Text>
-            <Text style={styles.userInfo}>Филиал: {user.department}</Text>
-            {user.roles.length === 1
-              ? <Text style={styles.userInfo}>Должность: {user.roles[0].role}</Text>
-              : <View>
-                <Text style={styles.userInfo}>Должности: </Text>
-                <FlatList
-                  data={user.roles}
-                  renderItem={renderRole}
-                  keyExtractor={(item, i) => i.toString()}
-                />
-              </View>}
-          </View>
-        </View>}
-
-      <Button title="Сгенерировать пользователя" onPress={onGetAnotherUserClick(users)}/>
-    </View>
+              <View style={styles.bodyWrapper}>
+                <View>
+                  <Text style={styles.userInfoTitle}>Город:</Text>
+                  <Text style={styles.userInfo}>{`\t` + city}</Text>
+                </View>
+                <View>
+                  <Text style={styles.userInfoTitle}>Филиал:</Text>
+                  <Text style={styles.userInfo}>{`\t` + branch}</Text>
+                </View>
+                <View>
+                  <Text style={styles.userInfoTitle}>Должность:</Text>
+                  <Text style={styles.userInfo}>{`\t` + role}</Text>
+                </View>
+                <View>
+                  <Text style={styles.userInfoTitle}>Начальник:</Text>
+                  <Text style={styles.userInfo}>{`\t` + leader}</Text>
+                </View>
+                <View>
+                  <Text style={styles.userInfoTitle}>ID филиала:</Text>
+                  <Text style={styles.userInfo}>{`\t` + branchId}</Text>
+                </View>
+                <View>
+                  <Text style={styles.userInfoTitle}>ID работника из YClients:</Text>
+                  <Text style={styles.userInfo}>{`\t` + yclId}</Text>
+                </View>
+              </View>
+            </View>}
+      </View>
   );
 };
 
@@ -79,11 +96,16 @@ Profile.propTypes = {
 const mapStateToProps = state => ({
   users: getUsers(state),
   activeUserId: getActiveUserId(state),
+  isLoggedIn: state.USER.isLoggedIn,
+  user: state.STORE.user,
 });
 
 const mapDispatchToProps = dispatch => ({
   onGetAnotherUserClick(users) {
     return () => dispatch(setUserId(getRandomInt(0, users.length - 1)));
+  },
+  fetchUserData() {
+    dispatch(fetchUser());
   },
 });
 

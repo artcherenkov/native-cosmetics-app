@@ -7,6 +7,7 @@ const initialState = {
   activeUserId: null,
   services: {},
   rawServices: {},
+  user: {},
 };
 
 const appStore = (state = initialState, action) => {
@@ -16,6 +17,9 @@ const appStore = (state = initialState, action) => {
     }
     case ActionType.SET_USER_ID: {
       return { ...state, activeUserId: action.payload };
+    }
+    case ActionType.FETCH_USER: {
+      return { ...state, user: action.payload };
     }
     case ActionType.FETCH_SERVICES: {
       console.log(action.payload);
