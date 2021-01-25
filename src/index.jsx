@@ -6,10 +6,15 @@ import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
+import moment from 'moment';
+import 'moment/locale/ru';
+
 import rootReducer from './store/reducers/root-reducer';
 import { createAPI } from './services/api';
 import App from './components/app';
 import { fetchUsers } from './store/api-action';
+
+moment.locale(`ru`);
 
 const api = createAPI();
 

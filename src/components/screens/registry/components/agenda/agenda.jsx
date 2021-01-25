@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { ScrollView, Text, View, StyleSheet, ActivityIndicator } from 'react-native';
+import { ScrollView, Text, View, StyleSheet } from 'react-native';
 import moment from 'moment';
 
 import ClientRegistration from '../client-registration/client-registration';
 import { range } from '../../../../../utils/common';
 import { fetchServices } from "../../../../../store/api-action";
 import { setLoading } from "../../../../../store/action";
+import Loading from "../../../../ui/loading/loading";
 
 const getHourStyles = (index) => {
   const res = [styles.hourContainer];
@@ -33,9 +34,7 @@ const Agenda = (props) => {
 
   return (
       <>
-        {isLoading && <View style={styles.overlay}>
-          <ActivityIndicator size="large"/>
-        </View>}
+        {isLoading && <Loading />}
         <ScrollView style={styles.agendaContainer}>
           {range(25).map((i) => (
               <View key={`hour-${i}`} style={getHourStyles(i)}>
@@ -74,18 +73,6 @@ const styles = StyleSheet.create({
     left: -45,
     top: -8,
     fontSize: 12,
-  },
-  overlay: {
-    position: `absolute`,
-    display: `flex`,
-    justifyContent: `center`,
-    alignItems: `center`,
-    top: 0,
-    left: 0,
-    height: `100%`,
-    width: `100%`,
-    zIndex: 500,
-    backgroundColor: `rgba(255, 255, 255, .7)`,
   },
 });
 

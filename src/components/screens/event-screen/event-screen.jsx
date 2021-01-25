@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
   },
   servicesItem: {
     fontSize: 16,
+    marginBottom: 10,
   },
   cost: {
     fontSize: 20,

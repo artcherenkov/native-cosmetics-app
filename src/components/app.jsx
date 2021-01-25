@@ -61,12 +61,7 @@ const ProfileNavigator = () => (
 const RegistryNavigator = () => (
     <Stack.Navigator>
       <Stack.Screen name="Registry" component={Registry} options={{ title: `Журнал записей`, headerShown: false }}/>
-      <Stack.Screen name="EventScreen" component={EventScreen} options={{
-        title: `Событие`,
-        headerRight: () => (
-            <Button onPress={() => alert(`This is a button!`)} title="Править"/>
-        ),
-      }}/>
+      <Stack.Screen name="EventScreen" component={EventScreen} options={{ title: `Событие` }}/>
     </Stack.Navigator>
 );
 

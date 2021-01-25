@@ -7,7 +7,7 @@ const initialState = {
   activeUserId: null,
   services: {},
   rawServices: {},
-  user: {},
+  user: null,
 };
 
 const appStore = (state = initialState, action) => {

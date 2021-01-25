@@ -7,11 +7,12 @@ import { View, Text, Button, FlatList, Image } from 'react-native';
 import styles from './styles';
 
 import { getActiveUserId, getUsers } from '../../../store/reducers/app-store/selectors';
-import { setUserId } from '../../../store/action';
+import { setLoading, setUserId } from '../../../store/action';
 import { getRandomInt } from '../../../utils/common';
 
 import userProp from '../../../types/user.prop';
 import { fetchUser } from "../../../store/api-action";
+import Loading from "../../ui/loading/loading";
 
 const renderRole = ({ item }) => (
     <Text style={styles.role}>
@@ -19,10 +20,8 @@ const renderRole = ({ item }) => (
     </Text>
 );
 
-const Profile = ({ navigation, users, activeUserId, onGetAnotherUserClick, user, fetchUserData, isLoggedIn }) => {
-
-  const { avatar, branch, city, id_branch: branchId, id_ycl: yclId, leader, login, name, role } = user;
-  console.log(avatar);
+const Profile = ({ navigation, user, fetchUserData, isLoggedIn, isLoading }) => {
+  const { avatar, branch, city, id_branch: branchId, id_ycl: yclId, leader, login, name, role } = user || {};
 
   useEffect(() => {
     fetchUserData();
@@ -30,8 +29,8 @@ const Profile = ({ navigation, users, activeUserId, onGetAnotherUserClick, user,
 
   return (
       <View style={styles.container}>
-        {!user
-          ? <Text>Loading...</Text>
+        {isLoading
+          ? <Loading />
           : <View style={styles.card}>
               <View style={styles.headerWrapper}>
                 <View style={styles.avatarWrapper}>
@@ -97,6 +96,7 @@ const mapStateToProps = state => ({
   users: getUsers(state),
   activeUserId: getActiveUserId(state),
   isLoggedIn: state.USER.isLoggedIn,
+  isLoading: state.STATE.isLoading,
   user: state.STORE.user,
 });
 
@@ -105,7 +105,9 @@ const mapDispatchToProps = dispatch => ({
     return () => dispatch(setUserId(getRandomInt(0, users.length - 1)));
   },
   fetchUserData() {
-    dispatch(fetchUser());
+    dispatch(setLoading(true));
+    dispatch(fetchUser())
+      .then(() => dispatch(setLoading(false)));
   },
 });
 
