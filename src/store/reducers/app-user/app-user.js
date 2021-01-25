@@ -7,8 +7,8 @@ export const AuthType = {
 
 const initialState = {
   userId: null,
-  token: `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDMwMTg2ODcsImlhdCI6MTYxMTQ4MjY4Nywic3ViIjoidGVzdGVyIn0.2seRQqoxISjuMG7XidzEUg68zd1ThB_-hcXCXa0E0Ao`,
-  isLoggedIn: true,
+  token: null,
+  isLoggedIn: false,
   authType: AuthType.LOGIN,
 };
 
