@@ -23,7 +23,7 @@ export const register = (credentials) => (dispatch, _getState, api) => {
   return (
     api.post(`${API_URL}/api/v1/user/register`, credentials)
       .then((res) => console.log(res))
-      .catch((err) => console.log(err))
+      .catch((err) => dispatch(setError(err)))
   );
 };
 

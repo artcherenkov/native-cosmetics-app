@@ -7,6 +7,7 @@ const Error = {
   WRONG_PASSWORD: `Неверный пароль`,
   PASSWORD_DIDNT_MATCH: `Пароли не совпадают`,
   LOGIN_ALREADY_EXISTS: `Пользователь с таким именем уже существует`,
+  WRONG_BRANCH_OR_ID: `Неверный ID работника или предприятия`,
 };
 
 const initialState = {

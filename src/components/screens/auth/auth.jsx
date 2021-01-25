@@ -148,7 +148,7 @@ const Auth = ({ login, register, isLoading, error, resetError }) => {
       acc = { ...acc, [key]: false };
       return acc;
     }, {}),
-    customValidities: Object.keys(FormInput[AuthType.LOGIN]).reduce((acc, key) => {
+    customValidities: Object.keys(FormInput[AuthType.REGISTER]).reduce((acc, key) => {
       acc = { ...acc, [key]: true };
       return acc;
     }, {}),

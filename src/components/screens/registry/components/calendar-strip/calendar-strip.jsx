@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Dimensions, FlatList, Text, View, StyleSheet } from 'react-native';
+import { Dimensions, FlatList, Text, View, StyleSheet, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
@@ -93,7 +93,9 @@ const renderDay = ({ size, today, activeDate, setActiveDate }) => ({ item }) => 
   />
 );
 
-const CalendarStrip = ({ activeDate, calStripLeft, today, setCurrentDates, setActiveDate }) => {
+const CalendarStrip = ({ services, activeDate, calStripLeft, today, setCurrentDates, setActiveDate, isLoading }) => {
+  const { fullCost, numberOfClients } = services[moment(activeDate).format(`YYYY-MM-DD`)] || {};
+
   const listRef = useRef(null);
   const beg = moment(`2021-01-01`);
   const end = moment(`2022-01-01`);
@@ -149,6 +151,20 @@ const CalendarStrip = ({ activeDate, calStripLeft, today, setCurrentDates, setAc
       <Text style={styles.selectedDate}>
         {activeDate && activeDate.format(`dddd D MMMM YYYY`)}
       </Text>
+      <View style={styles.dayStats}>
+        <View>
+          <Text style={styles.dayStatTitle}>Клиентов: </Text>
+          {!isLoading
+            ? <Text style={styles.dayStat}>{numberOfClients || 0}</Text>
+            : <ActivityIndicator />}
+        </View>
+        <View>
+          <Text style={styles.dayStatTitle}>Услуг на сумму: </Text>
+          {!isLoading
+            ? <Text style={styles.dayStat}>&#8381;{fullCost || 0}</Text>
+            : <ActivityIndicator />}
+        </View>
+      </View>
     </>
   );
 };
@@ -171,6 +187,23 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     fontSize: 18,
   },
+  dayStats: {
+    margin: 10,
+    flexDirection: `row`,
+    justifyContent: `space-around`,
+  },
+  dayStatTitle: {
+    color: `#434343`,
+  },
+  dayStat: {
+    fontSize: 20,
+    textAlign: `center`,
+  },
+});
+
+const mapStateToProps = state => ({
+  services: state.STORE.services,
+  isLoading: state.STATE.isLoading,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -180,4 +213,4 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export { CalendarStrip };
-export default connect(null, mapDispatchToProps)(CalendarStrip);
+export default connect(mapStateToProps, mapDispatchToProps)(CalendarStrip);
