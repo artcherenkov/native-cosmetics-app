@@ -24,7 +24,6 @@ const formatWithLeadingZero = (number) => number < 10 ? `0${number}:00` : `${num
 const Agenda = (props) => {
   const { activeDate, services, navigation, fetchServices, isLoading } = props;
   const activeDateEvents = services[moment(activeDate).format(`YYYY-MM-DD`)];
-  console.log(activeDateEvents);
 
   useEffect(() => {
     if (!services[moment(activeDate).format(`YYYY-MM-DD`)]) {

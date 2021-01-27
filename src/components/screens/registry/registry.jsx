@@ -9,18 +9,15 @@ import { getActiveDate } from '../../../store/reducers/app-state/selectors';
 import Agenda from './components/agenda/agenda';
 
 import events from './events-data.js';
-import { adaptServicesToClient } from "../../core/adapter/services";
 import { fetchServices } from "../../../store/api-action";
 
 // todo добавить обрезание длинных названий событий
 // todo добавить возможность перехода к конкретной дате по клику на описание дня (прямо под строкой календаря)?
 
-const Registry = ({ ourEvents, navigation, activeDate, token, fetchServices }) => {
+const Registry = ({ navigation, activeDate }) => {
   const today = moment();
-  const daysToWeekStart = moment(today).weekday() - 1; // moment().day(0) - воскресенье, значит надо отнять 1 день
+  const daysToWeekStart = moment(today).weekday();
   const [calStripLeft, setCurrentDates] = useState(moment(today).subtract(daysToWeekStart, `d`));
-
-  console.log(ourEvents);
 
   return (
     <SafeAreaView style={styles.container}>

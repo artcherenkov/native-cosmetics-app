@@ -49,8 +49,8 @@ const getMonths = (calStripLeft) => {
 const getWeekStartIndex = (date, { beg, dayOffset }) => {
   const index = moment.duration(moment(date).diff(beg)).asDays();
   let weekStartIndex = index - index % 7 + dayOffset;
-  if (index <= dayOffset) {
-    weekStartIndex = index;
+  if (index < dayOffset) {
+    return 0;
   } else if (index % 7 < dayOffset) {
     weekStartIndex -= 7;
   }
@@ -63,7 +63,7 @@ const getWeekStartIndex = (date, { beg, dayOffset }) => {
  * @param days
  * @returns {number}
  */
-const getDaysOffset = (days) => 7 % moment(days[0].date).weekday() + 1;
+const getDaysOffset = (days) => 7 % moment(days[0].date).weekday();
 
 /**
  * Функция для рендера FlatList
