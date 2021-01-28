@@ -1,6 +1,7 @@
 import { ActionType } from '../../action';
 import { getRandomArrayItem } from '../../../utils/common';
-import { adaptServicesToClient } from "../../../components/core/adapter/services";
+import { adaptServicesToClient } from "../../../core/adapter/services";
+import { rawServices } from "../../../data/services";
 
 const initialState = {
   users: [],
@@ -8,6 +9,7 @@ const initialState = {
   services: {},
   rawServices: {},
   user: null,
+  availableServices: JSON.parse(rawServices),
 };
 
 const appStore = (state = initialState, action) => {

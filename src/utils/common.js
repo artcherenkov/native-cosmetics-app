@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const addIds = (arr) => (
   arr
     .slice()
@@ -16,3 +18,21 @@ export const range = (number) => {
 
   return res;
 };
+
+export const getDurationString = (duration = 61) => {
+  const minutes = moment.duration(duration, `m`).minutes();
+  const hours = moment.duration(duration, `m`).hours();
+  let result = ``;
+  if (hours) {
+    result += `${hours}ч`;
+  }
+  if (minutes) {
+    result += ` ${minutes}м`;
+  }
+  return result.trim();
+};
+
+export const getDuration = ({ begin, duration }) => ({
+  begin: moment(begin).format(`kk:mm`),
+  end: moment(begin).add(duration, `m`).format(`kk:mm`),
+});

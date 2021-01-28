@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { View, Text, Button, FlatList, Image } from 'react-native';
+import { View, Text, Button, Image } from 'react-native';
 
 import styles from './styles';
 
@@ -14,12 +14,6 @@ import userProp from '../../../types/user.prop';
 import { fetchUser } from "../../../store/api-action";
 import Loading from "../../ui/loading/loading";
 
-const renderRole = ({ item }) => (
-    <Text style={styles.role}>
-      {`\t`}{item.id}. {item.role}
-    </Text>
-);
-
 const Profile = ({ navigation, user, fetchUserData, isLoggedIn, isLoading }) => {
   const { avatar, branch, city, id_branch: branchId, id_ycl: yclId, leader, login, name, role } = user || {};
 
@@ -29,7 +23,7 @@ const Profile = ({ navigation, user, fetchUserData, isLoggedIn, isLoading }) => 
 
   return (
       <View style={styles.container}>
-        {isLoading
+        {isLoading && user
           ? <Loading />
           : <View style={styles.card}>
               <View style={styles.headerWrapper}>
@@ -43,11 +37,11 @@ const Profile = ({ navigation, user, fetchUserData, isLoggedIn, isLoading }) => 
                   </View>
                   <View style={styles.ratingWrapper}>
                     <View style={styles.rateItem}>
-                      <Text style={styles.rating}>{user.rating || `...`}</Text>
+                      <Text style={styles.rating}>...</Text>
                       <Text>Рейтинг</Text>
                     </View>
                     <View style={styles.rateItem}>
-                      <Text style={styles.place}>{user.place || `...`}</Text>
+                      <Text style={styles.place}>...</Text>
                       <Text>Место</Text>
                     </View>
                   </View>

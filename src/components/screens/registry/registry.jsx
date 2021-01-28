@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
 });
 
 Registry.propTypes = {
-  navigation: PropTypes.any.isRequired,
+  navigation: PropTypes.any,
   activeDate: PropTypes.object,
 };
 
