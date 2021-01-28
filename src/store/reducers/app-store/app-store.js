@@ -9,7 +9,7 @@ const initialState = {
   services: {},
   rawServices: {},
   user: null,
-  availableServices: JSON.parse(rawServices),
+  availableServices: JSON.parse(rawServices).data.map((item) => ({ label: item.title, value: item.title })),
 };
 
 const appStore = (state = initialState, action) => {
