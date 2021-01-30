@@ -12,7 +12,10 @@ export const adaptServicesToClient = (data) => {
       duration: seanceLength / 60,
       cost: cost,
       begin: time,
-      services: services.map(service => service.title),
+      services: services.map(service => {
+        const { title, id } = service;
+        return { title, id };
+      }),
     }];
     return acc;
   }, []);

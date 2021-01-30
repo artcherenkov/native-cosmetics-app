@@ -9,7 +9,7 @@ import { getActiveDate } from '../../../store/reducers/app-state/selectors';
 import Agenda from './components/agenda/agenda';
 
 import events from './events-data.js';
-import { fetchServices } from "../../../store/api-action";
+import { fetchRegistrations } from "../../../store/api-action";
 
 // todo добавить обрезание длинных названий событий
 // todo добавить возможность перехода к конкретной дате по клику на описание дня (прямо под строкой календаря)?
@@ -57,7 +57,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   fetchServices(date) {
-    dispatch(fetchServices(date));
+    dispatch(fetchRegistrations(date));
   },
 });
 

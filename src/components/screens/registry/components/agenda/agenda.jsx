@@ -5,7 +5,7 @@ import moment from 'moment';
 
 import ClientRegistration from '../client-registration/client-registration';
 import { range } from '../../../../../utils/common';
-import { fetchServices } from "../../../../../store/api-action";
+import { fetchRegistrations } from "../../../../../store/api-action";
 import { setLoading } from "../../../../../store/action";
 import Loading from "../../../../ui/loading/loading";
 
@@ -22,12 +22,12 @@ const formatWithLeadingZero = (number) => number < 10 ? `0${number}:00` : `${num
 
 // todo положить events в редакс, брать activeDate из редакса
 const Agenda = (props) => {
-  const { activeDate, services, navigation, fetchServices, isLoading } = props;
-  const activeDateEvents = services[moment(activeDate).format(`YYYY-MM-DD`)];
+  const { activeDate, registrations, navigation, fetchRegistrations, isLoading } = props;
+  const activeDateEvents = registrations[moment(activeDate).format(`YYYY-MM-DD`)];
 
   useEffect(() => {
-    if (!services[moment(activeDate).format(`YYYY-MM-DD`)]) {
-      fetchServices(moment(activeDate).format(`YYYY-MM-DD`));
+    if (!registrations[moment(activeDate).format(`YYYY-MM-DD`)]) {
+      fetchRegistrations(moment(activeDate).format(`YYYY-MM-DD`));
     }
   }, [activeDate]);
 
@@ -76,14 +76,14 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-  services: state.STORE.services,
+  registrations: state.STORE.registrations,
   isLoading: state.STATE.isLoading,
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchServices(date) {
+  fetchRegistrations(date) {
     dispatch(setLoading(true));
-    dispatch(fetchServices(date))
+    dispatch(fetchRegistrations(date))
       .then(() => dispatch(setLoading(false)));
   },
 });

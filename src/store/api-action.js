@@ -1,7 +1,7 @@
-import { fetchUsers as fetchUsersSync, fetchServices as fetchServicesSync, fetchUser as fetchUserSync, setCredentials, setError } from './action';
+import { fetchUsers as fetchUsersSync, fetchRegistrations as fetchRegistrationsSync, fetchUser as fetchUserSync, setCredentials, setError } from './action';
 import { mockupUserData } from '../mocks/users-mockup';
 
-const API_URL = `https://41c90902de22.ngrok.io`;
+const API_URL = `https://741067c7af3c.ngrok.io`;
 
 export const fetchUsers = () => (dispatch, _getState, api) => (
   api.get(`https://damp-fortress-80739.herokuapp.com/user`)
@@ -35,12 +35,12 @@ export const fetchUser = () => (dispatch, getState, api) => (
     .catch((err) => console.log(err))
 );
 
-export const fetchServices = (date) => (dispatch, getState, api) => {
+export const fetchRegistrations = (date) => (dispatch, getState, api) => {
   return (
     api.get(`${API_URL}/api/v1/event/get/${date}`, {
       headers: { Authorization: getState().USER.token },
     })
-      .then(({ data }) => dispatch(fetchServicesSync(data, date)))
+      .then(({ data }) => dispatch(fetchRegistrationsSync(data, date)))
       .catch((err) => console.log(err))
   );
 };

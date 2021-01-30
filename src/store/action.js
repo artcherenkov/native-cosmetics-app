@@ -1,7 +1,7 @@
 export const ActionType = {
   FETCH_USERS: `FETCH_USERS`,
   FETCH_USER: `FETCH_USER`,
-  FETCH_SERVICES: `FETCH_SERVICES`,
+  FETCH_REGISTRATIONS: `FETCH_REGISTRATIONS`,
   SET_USER_ID: `SET_USER_ID`,
   SET_ACTIVE_DATE: `SET_ACTIVE_DATE`,
   SET_CREDENTIALS: `SET_CREDENTIALS`,
@@ -21,9 +21,9 @@ export const fetchUser = (user) => ({
   payload: user,
 });
 
-export const fetchServices = (services, date) => ({
-  type: ActionType.FETCH_SERVICES,
-  payload: { services, date },
+export const fetchRegistrations = (registrations, date) => ({
+  type: ActionType.FETCH_REGISTRATIONS,
+  payload: { registrations, date },
 });
 
 export const setUserId = (userId) => ({

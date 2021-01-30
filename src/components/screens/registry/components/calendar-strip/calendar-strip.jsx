@@ -93,8 +93,8 @@ const renderDay = ({ size, today, activeDate, setActiveDate }) => ({ item }) => 
   />
 );
 
-const CalendarStrip = ({ services, activeDate, calStripLeft, today, setCurrentDates, setActiveDate, isLoading }) => {
-  const { fullCost, numberOfClients } = services[moment(activeDate).format(`YYYY-MM-DD`)] || {};
+const CalendarStrip = ({ registrations, activeDate, calStripLeft, today, setCurrentDates, setActiveDate, isLoading }) => {
+  const { fullCost, numberOfClients } = registrations[moment(activeDate).format(`YYYY-MM-DD`)] || {};
 
   const listRef = useRef(null);
   const beg = moment(`2021-01-01`);
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  services: state.STORE.services,
+  registrations: state.STORE.registrations,
   isLoading: state.STATE.isLoading,
 });
 

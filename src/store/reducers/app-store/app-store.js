@@ -6,10 +6,10 @@ import { rawServices } from "../../../data/services";
 const initialState = {
   users: [],
   activeUserId: null,
-  services: {},
-  rawServices: {},
+  registrations: {},
+  rawRegistrations: {},
   user: null,
-  availableServices: JSON.parse(rawServices).data.map((item) => ({ label: item.title, value: item.title })),
+  services: JSON.parse(rawServices).data.map((item) => ({ title: item.title, id: item.salon_service_id })),
 };
 
 const appStore = (state = initialState, action) => {
@@ -23,13 +23,13 @@ const appStore = (state = initialState, action) => {
     case ActionType.FETCH_USER: {
       return { ...state, user: action.payload };
     }
-    case ActionType.FETCH_SERVICES: {
+    case ActionType.FETCH_REGISTRATIONS: {
       console.log(action.payload);
-      const { services, date } = action.payload;
+      const { registrations, date } = action.payload;
       return {
         ...state,
-        rawServices: { ...state.rawServices, [date]: services },
-        services: { ...state.services, [date]: adaptServicesToClient(services) },
+        rawRegistrations: { ...state.rawRegistrations, [date]: registrations },
+        registrations: { ...state.registrations, [date]: adaptServicesToClient(registrations) },
       };
     }
     default:

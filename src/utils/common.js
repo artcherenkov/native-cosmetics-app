@@ -36,3 +36,5 @@ export const getDuration = ({ begin, duration }) => ({
   begin: moment(begin).format(`kk:mm`),
   end: moment(begin).add(duration, `m`).format(`kk:mm`),
 });
+
+export const getRandomId = () => `${moment().unix() + Math.random()}`;

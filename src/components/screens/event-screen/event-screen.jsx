@@ -1,16 +1,14 @@
 import React, { useState, useReducer } from 'react';
+import { Text, ScrollView, StyleSheet, View, Button, TouchableOpacity, Platform } from 'react-native';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Text, SafeAreaView, StyleSheet, View, Button, TouchableOpacity, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-import Service from "../registry/components/service/service";
-import DropDownPicker from 'react-native-dropdown-picker';
-import Icon from 'react-native-vector-icons/Feather';
 
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { getDurationString } from "../../../utils/common";
-import { rawServices } from "../../../data/services";
+import { getDurationString, getRandomId } from "../../../utils/common";
+import Picker from "../../ui/picker/picker";
 
 const CHANGE_DATE = `CHANGE_DATE`;
 const CHANGE_END_DATE = `CHANGE_END_DATE`;
@@ -41,11 +39,16 @@ const calendarReducer = (state, action) => {
   }
 };
 
-const EventScreen = ({ route }) => {
+const EventScreen = ({ route, services }) => {
   const { registration } = route.params;
   const { begin, duration } = registration;
 
-  const data = JSON.parse(rawServices).data.map((item) => ({ label: item.title, value: item.title }));
+  const [clientServices, setClientServices] = useState(registration.services);
+  console.log(clientServices);
+
+  const handleServiceAdd = () => {
+    setClientServices((prevState) => [...prevState, `Новая услуга`]);
+  };
 
   const [calendarState, dispatchCalendarState] = useReducer(calendarReducer, {
     date: moment(begin).toISOString(),
@@ -57,121 +60,118 @@ const EventScreen = ({ route }) => {
     const currentDate = selectedDate || moment();
     dispatchCalendarState({ type: CHANGE_DATE, payload: currentDate });
   };
-
   const onEndDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || moment();
-    console.log(selectedDate);
     dispatchCalendarState({ type: CHANGE_END_DATE, payload: currentDate });
   };
 
-  return (
-      <SafeAreaView style={styles.container}>
-        <Text style={styles.title}>
-          {registration.clientName}
-        </Text>
-        {/* <View style={styles.dateControlsContainer}> */}
-        {/*  {Platform.OS === `android` && <TouchableOpacity onPress={showDatepicker}> */}
-        {/*    <View style={[styles.dateControl, styles.beginDate]}> */}
-        {/*      <Text style={styles.date}>{moment(registration.begin).format(`D MMMM YYYY`)}</Text> */}
-        {/*      <AntDesign style={styles.dateIcon} name="calendar" size={20} color="#808080"/> */}
-        {/*    </View> */}
-        {/*  </TouchableOpacity>} */}
-        {/*  {Platform.OS === `ios` && <View style={{ width: `40%` }}> */}
-        {/*    <DateTimePicker */}
-        {/*        testID="datePicker" */}
-        {/*        value={calendarState.date} */}
-        {/*        mode="date" */}
-        {/*        locale="ru" */}
-        {/*        is24Hour={true} */}
-        {/*        display="default" */}
-        {/*        onChange={onDateChange} */}
-        {/*    /> */}
-        {/*  </View>} */}
-        {/*  <View style={styles.dateContainer}> */}
-        {/*    <View style={styles.intervalContainer}> */}
-        {/*      {Platform.OS === `android` && <TouchableOpacity onPress={showTimepicker}> */}
-        {/*        <View style={[styles.dateControl, styles.durationControl]}> */}
-        {/*          <Text style={styles.date}>{begin}</Text> */}
-        {/*          <FontAwesome style={styles.dateIcon} name="unsorted" size={15} color="#808080"/> */}
-        {/*        </View> */}
-        {/*      </TouchableOpacity>} */}
-        {/*      {Platform.OS === `ios` && <View style={{ width: 75 }}> */}
-        {/*        <DateTimePicker */}
-        {/*            style={{ width: 70, height: 35 }} */}
-        {/*            testID="datePicker1" */}
-        {/*            value={calendarState.date} */}
-        {/*            mode={`time`} */}
-        {/*            locale="ru" */}
-        {/*            is24Hour={true} */}
-        {/*            display="default" */}
-        {/*            onChange={onDateChange} */}
-        {/*            minuteInterval={15} */}
-        {/*            maximumDate={new Date(moment(calendarState.end).subtract(15, `m`).toISOString())} */}
-        {/*        /> */}
-        {/*      </View>} */}
-        {/*      <Text style={{ paddingTop: 8, paddingRight: 9 }}>&mdash;</Text> */}
-        {/*      {Platform.OS === `ios` && <View style={{ width: 75 }}> */}
-        {/*        <DateTimePicker */}
-        {/*            style={{ width: 70, height: 35 }} */}
-        {/*            testID="datePicker2" */}
-        {/*            value={new Date(calendarState.end)} */}
-        {/*            mode={`time`} */}
-        {/*            locale="ru" */}
-        {/*            is24Hour={true} */}
-        {/*            display="default" */}
-        {/*            onChange={onEndDateChange} */}
-        {/*            minuteInterval={15} */}
-        {/*            minimumDate={new Date(moment(calendarState.date).add(15, `m`).toISOString())} */}
-        {/*        /> */}
-        {/*      </View>} */}
-        {/*    </View> */}
-        {/*    <View style={styles.durationContainer}> */}
-        {/*      <Text style={styles.durationText}>{getDurationString(calendarState.duration)}</Text> */}
-        {/*    </View> */}
-        {/*  </View> */}
-        {/* </View> */}
-        <View style={styles.servicesContainer}>
-          <Text style={styles.cost}>&#8381; {registration.cost}</Text>
-          {registration.services.map(service => <Service key={Math.random()} service={service}/>)}
-          <View>
-            <DropDownPicker
-                searchable={true}
-                searchablePlaceholder="Search for an item"
-                searchablePlaceholderTextColor="gray"
-                searchableError={() => <Text>Not Found</Text>}
-                items={data}
-                defaultValue={data[0].value}
-                containerStyle={{ height: 40 }}
-                style={{ backgroundColor: `#fafafa` }}
-                itemStyle={{ justifyContent: `flex-start` }}
-                dropDownStyle={{ height: 500 }}
-                onChangeItem={item => console.log(item)}
-                dropDownMaxHeight={300}
-            />
-          </View>
+  const onItemChange = (newItem, oldItem) => {
+    console.log(`newItem`, newItem);
+    console.log(`oldItem`, oldItem);
+  };
 
-        </View>
-        <View style={styles.controls}>
-          <Button title="Добавить услугу"/>
-        </View>
-        {/* {show && ( */}
-        {/*    <DateTimePicker */}
-        {/*        testID="dateTimePicker" */}
-        {/*        value={date} */}
-        {/*        mode={mode} */}
-        {/*        locale="ru" */}
-        {/*        is24Hour={true} */}
-        {/*        display="default" */}
-        {/*        onChange={onChange} */}
-        {/*    /> */}
-        {/* )} */}
-      </SafeAreaView>
+  return (
+      <>
+        <ScrollView style={styles.container}>
+          <Text style={styles.title}>
+            {registration.clientName}
+          </Text>
+          <View style={styles.dateControlsContainer}>
+            {Platform.OS === `android` && <TouchableOpacity onPress={showDatepicker}>
+              <View style={[styles.dateControl, styles.beginDate]}>
+                <Text style={styles.date}>{moment(registration.begin).format(`D MMMM YYYY`)}</Text>
+                <AntDesign style={styles.dateIcon} name="calendar" size={20} color="#808080"/>
+              </View>
+            </TouchableOpacity>}
+            {Platform.OS === `ios` && <View style={{ width: `40%` }}>
+              <DateTimePicker
+                  testID="datePicker"
+                  value={new Date(calendarState.date) || moment()}
+                  mode="date"
+                  locale="ru"
+                  is24Hour={true}
+                  display="default"
+                  onChange={onDateChange}
+              />
+            </View>}
+            <View style={styles.dateContainer}>
+              <View style={styles.intervalContainer}>
+                {Platform.OS === `android` && <TouchableOpacity onPress={showTimepicker}>
+                  <View style={[styles.dateControl, styles.durationControl]}>
+                    <Text style={styles.date}>{begin}</Text>
+                    <FontAwesome style={styles.dateIcon} name="unsorted" size={15} color="#808080"/>
+                  </View>
+                </TouchableOpacity>}
+                {Platform.OS === `ios` && <View style={{ width: 75 }}>
+                  <DateTimePicker
+                      style={{ width: 70, height: 35 }}
+                      testID="datePicker1"
+                      value={new Date(calendarState.date) || moment()}
+                      mode={`time`}
+                      locale="ru"
+                      is24Hour={true}
+                      display="default"
+                      onChange={onDateChange}
+                      minuteInterval={15}
+                      maximumDate={new Date(moment(calendarState.end).subtract(15, `m`).toISOString())}
+                  />
+                </View>}
+                <Text style={{ paddingTop: 8, paddingRight: 9 }}>&mdash;</Text>
+                {Platform.OS === `ios` && <View style={{ width: 75 }}>
+                  <DateTimePicker
+                      style={{ width: 70, height: 35 }}
+                      testID="datePicker2"
+                      value={new Date(calendarState.end) || moment()}
+                      mode={`time`}
+                      locale="ru"
+                      is24Hour={true}
+                      display="default"
+                      onChange={onEndDateChange}
+                      minuteInterval={15}
+                      minimumDate={new Date(moment(calendarState.date).add(15, `m`).toISOString())}
+                  />
+                </View>}
+              </View>
+              <View style={styles.durationContainer}>
+                <Text style={styles.durationText}>{getDurationString(calendarState.duration)}</Text>
+              </View>
+            </View>
+          </View>
+          <View style={styles.servicesContainer}>
+            <Text style={styles.cost}>&#8381; {registration.cost}</Text>
+            {clientServices.map(service => (
+                <Picker
+                    key={getRandomId()}
+                    data={services}
+                    initialValue={service}
+                    onItemChange={onItemChange}
+                />
+            ))}
+          </View>
+          <View style={styles.controls}>
+            <Button title="Добавить услугу" onPress={handleServiceAdd}/>
+          </View>
+        </ScrollView>
+      </>
   );
 };
 
 const styles = StyleSheet.create({
+  popupContainer: {
+    width: `100%`,
+    height: `100%`,
+    position: `absolute`,
+    top: 0,
+    left: 0,
+    backgroundColor: `rgba(0, 0, 0, .7)`,
+    // zIndex: 100,
+    paddingTop: 30,
+    alignItems: `center`,
+  },
   container: {
     margin: 10,
+    height: `100%`,
+    // backgroundColor: `blue`,
   },
   title: {
     fontSize: 24,
@@ -247,11 +247,8 @@ const styles = StyleSheet.create({
   dateIcon: {
     marginLeft: 10,
   },
-  beginDate: {
-    // marginRight: 15,
-  },
+  beginDate: {},
   durationContainer: {
-    // flexGrow: 1,
     alignItems: `center`,
     justifyContent: `center`,
     borderRadius: 5,
@@ -269,4 +266,9 @@ EventScreen.propTypes = {
   route: PropTypes.any,
 };
 
-export default EventScreen;
+const mapStateToProps = (state) => ({
+  services: state.STORE.services,
+});
+
+export { EventScreen };
+export default connect(mapStateToProps, null)(EventScreen);
